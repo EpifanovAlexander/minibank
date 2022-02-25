@@ -1,0 +1,38 @@
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\bin\Debug\net6.0\Minibank.Data.deps.json
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\bin\Debug\net6.0\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\bin\Debug\net6.0\Minibank.Data.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\bin\Debug\net6.0\Minibank.Core.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\bin\Debug\net6.0\Minibank.Core.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.AssemblyReference.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfoInputs.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfo.cs
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CoreCompileInputs.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CopyComplete
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\refint\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\Minibank.Data.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank.Web\Minibank.Data\obj\Debug\net6.0\ref\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.deps.json
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Core.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Core.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.AssemblyReference.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfoInputs.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfo.cs
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CoreCompileInputs.cache
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CopyComplete
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\refint\Minibank.Data.dll
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.pdb
+D:\Мои вещи\Прочее\Education\Task2\Minibank\Minibank.Data\obj\Debug\net6.0\ref\Minibank.Data.dll
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.AssemblyReference.cache
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfoInputs.cache
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.AssemblyInfo.cs
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CoreCompileInputs.cache
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.dll
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\ref\Minibank.Data.dll
+D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.pdb

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "ObTUz4Ss4vbQT7ATX0hBRDLYuEndmTplnyl7ggfsyh5kXvU04ZTg99lBRG1JluYS69iPhQ45hHzYWRwsupyb/g==",
+  "success": true,
+  "projectFilePath": "D:\\Repositories\\MiniBank\\Minibank\\Minibank.Web\\Minibank.Web.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\alexl\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\alexl\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\alexl\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\alexl\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\alexl\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\alexl\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
