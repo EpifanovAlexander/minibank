@@ -36,3 +36,10 @@ D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.c
 D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.dll
 D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\ref\Minibank.Data.dll
 D:\Repositories\MiniBank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.pdb
+D:\Repositories\minibank\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.deps.json
+D:\Repositories\minibank\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.dll
+D:\Repositories\minibank\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Data.pdb
+D:\Repositories\minibank\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Core.dll
+D:\Repositories\minibank\Minibank\Minibank.Data\bin\Debug\net6.0\Minibank.Core.pdb
+D:\Repositories\minibank\Minibank\Minibank.Data\obj\Debug\net6.0\Minibank.Data.csproj.CopyComplete
+D:\Repositories\minibank\Minibank\Minibank.Data\obj\Debug\net6.0\refint\Minibank.Data.dll

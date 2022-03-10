@@ -1,4 +1,5 @@
 using Minibank.Core;
+using Minibank.Core.Interfaces;
 using Minibank.Data;
 using Minibank.Web.Middlewares;
 
@@ -11,8 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICurrencyService, CurrencyService>();
-builder.Services.AddScoped<IConverter, Converter>();
+builder.Services.AddScoped<ICurrencyRateService, CurrencyService>();
+builder.Services.AddScoped<ICurrencyConverter, CurrencyConverter>();
 
 
 var app = builder.Build();

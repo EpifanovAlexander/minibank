@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Minibank.Core;
+using Minibank.Core.Interfaces;
 
 namespace Minibank.Web.Controllers
 {
@@ -7,8 +7,8 @@ namespace Minibank.Web.Controllers
     [Route("[controller]")]
     public class ConvertController : ControllerBase
     {
-        private readonly IConverter _converter;
-        public ConvertController(IConverter converter)
+        private readonly ICurrencyConverter _converter;
+        public ConvertController(ICurrencyConverter converter)
         {
             _converter = converter;
         }

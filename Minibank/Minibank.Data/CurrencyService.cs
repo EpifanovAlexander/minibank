@@ -1,8 +1,8 @@
-﻿using Minibank.Core;
+﻿using Minibank.Core.Interfaces;
 
 namespace Minibank.Data
 {
-    public class CurrencyService : ICurrencyService
+    public class CurrencyService : ICurrencyRateService
     {
         private Random _random;
         public CurrencyService()

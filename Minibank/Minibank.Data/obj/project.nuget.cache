@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "insBEtEEcZSTnvBmKkZYOTNH8oDaQ6G2i8Y8gDwYc9KhbmrUC3dLhQQUWFX4prEBx1pCMDDl8hsGapZU0XH4CQ==",
+  "dgSpecHash": "an/4YN8KrBPVkQFuvvs4zea0jHJm5pHFGu2kkNjg+IrDGbYpRfpoN8oHywNGN/eEObOCOeVOWxOGOfjTYhyl9Q==",
   "success": true,
-  "projectFilePath": "D:\\Repositories\\MiniBank\\Minibank\\Minibank.Data\\Minibank.Data.csproj",
+  "projectFilePath": "D:\\Repositories\\minibank\\Minibank\\Minibank.Data\\Minibank.Data.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

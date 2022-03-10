@@ -1,29 +1,30 @@
 ﻿using Minibank.Core.Exceptions;
+using Minibank.Core.Interfaces;
 
 namespace Minibank.Core
 {
-    public class Converter : IConverter
+    public class CurrencyConverter : ICurrencyConverter
     {
-        private readonly ICurrencyService _currencyService;
+        private readonly ICurrencyRateService _currencyRateService;
 
-        public Converter(ICurrencyService currencyService)
+        public CurrencyConverter(ICurrencyRateService currencyRateService)
         {
-            _currencyService = currencyService;
+            _currencyRateService = currencyRateService;
         }
 
         public double Convert(int sum, string currency)
         {
-            int exchangeRate = _currencyService.GetExchangeRate(currency);
+            int exchangeRate = _currencyRateService.GetExchangeRate(currency);
             if (exchangeRate<0)
             {
                 throw new UserFriendlyException("Ошибка: неверно указана валюта");
             }
 
-            double result = (double) sum / exchangeRate;
-            if (result < 0)
+            if (sum < 0)
             {
                 throw new UserFriendlyException("Ошибка: получена отрицательная сумма в результате конвертирования");
             }
+            double result = (double)sum / exchangeRate;
             return Math.Round(result, 3);
         }
     }
