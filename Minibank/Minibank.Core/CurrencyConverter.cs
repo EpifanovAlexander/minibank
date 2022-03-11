@@ -24,8 +24,11 @@ namespace Minibank.Core
             {
                 throw new UserFriendlyException("Ошибка: получена отрицательная сумма в результате конвертирования");
             }
-            double result = (double)sum / exchangeRate;
-            return Math.Round(result, 3);
+            else
+            {
+                double result = (double)sum / exchangeRate;
+                return Math.Round(result, 3);
+            }
         }
     }
 }
