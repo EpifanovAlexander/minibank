@@ -14,21 +14,19 @@ namespace Minibank.Core
 
         public double Convert(int sum, string currency)
         {
+            if (sum < 0)
+            {
+                throw new UserFriendlyException("Ошибка: получена отрицательная сумма в результате конвертирования");
+            }
+
             int exchangeRate = _currencyRateService.GetExchangeRate(currency);
             if (exchangeRate<0)
             {
                 throw new UserFriendlyException("Ошибка: неверно указана валюта");
             }
 
-            if (sum < 0)
-            {
-                throw new UserFriendlyException("Ошибка: получена отрицательная сумма в результате конвертирования");
-            }
-            else
-            {
-                double result = (double)sum / exchangeRate;
-                return Math.Round(result, 3);
-            }
+            double result = (double)sum / exchangeRate;
+            return Math.Round(result, 3);
         }
     }
 }
