@@ -2,20 +2,25 @@
 using Minibank.Core.Domains.Users.Repositories;
 
 
-namespace Minibank.Data.DbModels.Users
+namespace Minibank.Data.DbModels.Users.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private static List<UserDbModel> _userStorage = new List<UserDbModel>();
 
+        public bool IsUserExist(int id)
+        {
+            return _userStorage.Exists(_user => _user.Id == id);
+        }
+
         public User Get(int id)
         {
-            var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == id);
-            if (userDbModel == null)
+            if (IsUserExist(id))
             {
-                return null;
+                var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == id);
+                return new User(userDbModel.Id, userDbModel.Login, userDbModel.Email);
             }
-            return new User(userDbModel.Id, userDbModel.Login, userDbModel.Email);
+            return null;
         }
 
         public IEnumerable<User> GetAll()
@@ -31,28 +36,29 @@ namespace Minibank.Data.DbModels.Users
                 Login = user.Login,
                 Email = user.Email
             };
-
             _userStorage.Add(userDbModel);
         }
 
-        public void Update(User user)
+        public bool Update(User user)
         {
-            var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == user.Id);
-
-            if (userDbModel != null)
+            if (IsUserExist(user.Id))
             {
+                var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == user.Id);
                 userDbModel.Login = user.Login;
                 userDbModel.Email = user.Email;
+                return true;
             }
+            return false;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == id);
-            if (userDbModel != null)
+            if (IsUserExist(id))
             {
-                _userStorage.Remove(userDbModel);
+                _userStorage.Remove(_userStorage.FirstOrDefault(_user => _user.Id == id));
+                return true;
             }
+            return false;
         }
     }
 }

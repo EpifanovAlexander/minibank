@@ -36,16 +36,22 @@ namespace Minibank.Core.Domains.Users.Services
 
         public void Update(User user)
         {
-            _userRepository.Update(user);
+            if (!_userRepository.Update(user))
+            {
+                throw new ValidationException("Пользователь не обновился");
+            }
         }
 
         public void Delete(int id)
         {
-            if (_bankAccountRepository.GetUserAccounts(id).Count()!=0)
+            if (_bankAccountRepository.GetUserAccounts(id).Any())
             {
                 throw new ValidationException("У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя");
             }
-            _userRepository.Delete(id);
+            if (!_userRepository.Delete(id))
+            {
+                throw new ValidationException("Пользователь не удалился");
+            }
         }
     }
 }

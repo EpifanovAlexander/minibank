@@ -1,13 +1,12 @@
 ﻿using Minibank.Core.Domains.BankAccounts;
 using Minibank.Core.Domains.BankAccounts.Repositories;
-using Minibank.Core.Domains.BankTransferHistories;
 
-namespace Minibank.Data.DbModels.BankAccounts
+namespace Minibank.Data.DbModels.BankAccounts.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
         private static List<BankAccountDbModel> _bankAccountStorage = new List<BankAccountDbModel>();
-        private static List<BankTransferHistoryDbModel> _transferHistoryStorage = new List<BankTransferHistoryDbModel>();
+
 
         private BankAccount ConvertToBankAccount(BankAccountDbModel bankAccount)
         {
@@ -16,14 +15,20 @@ namespace Minibank.Data.DbModels.BankAccounts
         }
 
 
+        public bool IsBankAccountExist(int id)
+        {
+            return _bankAccountStorage.Exists(account => account.Id == id);
+        }
+
+
         public BankAccount Get(int accountId)
         {
-            var bankAccount = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
-            if (bankAccount == null)
+            if (IsBankAccountExist(accountId))
             {
-                return null;
+                var bankAccount = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
+                return ConvertToBankAccount(bankAccount);
             }
-            return ConvertToBankAccount(bankAccount);
+            return null;
         }
 
 
@@ -53,13 +58,15 @@ namespace Minibank.Data.DbModels.BankAccounts
         }
 
 
-        public void Delete(int accountId)
+        public bool Delete(int accountId)
         {
-            var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
-            if (bankAccountDbModel != null)
+            if (IsBankAccountExist(accountId))
             {
+                var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
                 bankAccountDbModel.IsActive = false;
+                return true;
             }
+            return false;
         }
 
 
@@ -73,11 +80,6 @@ namespace Minibank.Data.DbModels.BankAccounts
                 return Math.Round(sum * 0.02, 2);
             }
             return 0;
-
-            //if (Get(fromAccountId).UserId == Get(toAccountId).UserId)
-            //{
-            //    return 0;
-            //}
         }
 
 
@@ -85,23 +87,7 @@ namespace Minibank.Data.DbModels.BankAccounts
         {
             _bankAccountStorage.FirstOrDefault(_account => _account.Id == fromAccountId).Sum -= Math.Round(sumFrom,2);
             _bankAccountStorage.FirstOrDefault(_account => _account.Id == toAccountId).Sum += Math.Round(sumTo,2);
-
-            var bankTransferHistoryDbModel = new BankTransferHistoryDbModel
-            {
-                Id = (_transferHistoryStorage.Count == 0) ? 0 : _transferHistoryStorage.Max(b => b.Id) + 1,
-                Sum = sumFrom,
-                FromAccountId = fromAccountId,
-                ToAccountId = toAccountId
-            };
-            _transferHistoryStorage.Add(bankTransferHistoryDbModel);
         }
 
-
-        public IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
-        {
-            return _transferHistoryStorage
-               .Where(history => GetUserAccounts(userId).Any(account => account.Id==history.FromAccountId))
-               .Select(history => new BankTransferHistory(history.Id, history.Sum, history.FromAccountId, history.ToAccountId));
-        }
     }
 }

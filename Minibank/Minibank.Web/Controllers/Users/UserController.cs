@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Minibank.Core.Domains.Users;
 using Minibank.Core.Domains.Users.Services;
-using Minibank.Web.Dtos;
 
-namespace Minibank.Web.Controllers
+namespace Minibank.Web.Controllers.Users
 {
     [ApiController]
     [Route("[controller]")]
@@ -17,39 +16,39 @@ namespace Minibank.Web.Controllers
         }
 
 
-        [HttpGet("GetUser/{id}")]
-        public UserDto Get(int id)
+        [HttpGet("{id}")]
+        public UserDto GetUserById(int id)
         {
             var model = _userService.Get(id);
             return new UserDto(model.Id, model.Login, model.Email);
         }
 
-        [HttpGet("GetAllUsers")]
-        public IEnumerable<UserDto> GetAll()
+        [HttpGet]
+        public IEnumerable<UserDto> GetAllUsers()
         {
             return _userService.GetAll()
                 .Select(user => new UserDto(user.Id, user.Login, user.Email));
         }
 
 
-        [HttpPost("CreateUser")]
-        public void Create(UserDto model)
+        [HttpPost]
+        public void CreateUser(CreateUserDto model)
         {
-            _userService.Create(new User(model.Id, model.Login, model.Email));
+            _userService.Create(new User(-1, model.Login, model.Email));
         }
 
 
 
-        [HttpPut("UpdateUser/{id}")]
-        public void Update(int id, UserDto model)
+        [HttpPut("{id}")]
+        public void UpdateUser(int id, UserDto model)
         {
             _userService.Update(new User(id, model.Login, model.Email));
         }
 
  
 
-        [HttpDelete("DeleteUser/{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public void DeleteUserById(int id)
         {
             _userService.Delete(id);
         }

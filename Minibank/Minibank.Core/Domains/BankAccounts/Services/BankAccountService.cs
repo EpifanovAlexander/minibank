@@ -1,5 +1,6 @@
 ﻿using Minibank.Core.Domains.BankAccounts.Repositories;
 using Minibank.Core.Domains.BankTransferHistories;
+using Minibank.Core.Domains.BankTransferHistories.Repositories;
 using Minibank.Core.Domains.Currencies;
 using Minibank.Core.Domains.Currencies.Services;
 using Minibank.Core.Domains.Users.Repositories;
@@ -12,12 +13,15 @@ namespace Minibank.Core.Domains.BankAccounts.Services
         private readonly IBankAccountRepository _bankAccountRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICurrencyConverter _currencyConverter;
+        private readonly IBankTransferHistoryRepository _bankTransferHistoryRepository;
 
-        public BankAccountService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository, ICurrencyConverter currencyConverter)
+        public BankAccountService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository, 
+            ICurrencyConverter currencyConverter, IBankTransferHistoryRepository bankTransferHistoryRepository)
         {
             _bankAccountRepository = bankAccountRepository;
             _userRepository = userRepository;
             _currencyConverter = currencyConverter;
+            _bankTransferHistoryRepository = bankTransferHistoryRepository;
         }
 
 
@@ -29,7 +33,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
 
         public IEnumerable<BankAccount> GetUserBankAccounts(int userId)
         {
-            if (_userRepository.Get(userId) == null)
+            if (!_userRepository.IsUserExist(userId))
             {
                 throw new ValidationException("Ошибка: Такого пользователя нет в БД");
             }
@@ -39,10 +43,6 @@ namespace Minibank.Core.Domains.BankAccounts.Services
 
         public void Create(BankAccount account)
         {
-            if (_userRepository.Get(account.UserId)==null)
-            {
-                throw new ValidationException("Ошибка: Такого пользователя нет в БД");
-            }
             if (account.Sum<0)
             {
                 throw new ValidationException("Ошибка: Нельзя добавить счёт с отрицательной суммой");
@@ -51,29 +51,46 @@ namespace Minibank.Core.Domains.BankAccounts.Services
             {
                 throw new ValidationException("Ошибка: Нельзя создать счёт с такой валютой");
             }
+            if (!_userRepository.IsUserExist(account.UserId))
+            {
+                throw new ValidationException("Ошибка: Такого пользователя нет в БД");
+            }
             _bankAccountRepository.Create(account);
         }
 
 
         public void Delete(int accountId)
         {
-            BankAccount account = _bankAccountRepository.Get(accountId);
-            if (account == null)
+            if (!_bankAccountRepository.IsBankAccountExist(accountId))
             {
                 throw new ValidationException("Ошибка: Такого банковского счёта нет в БД");
             }
+            BankAccount account = _bankAccountRepository.Get(accountId);
             if (account.Sum != 0)
             {
                 throw new ValidationException("Ошибка: На данном банковском счёте ещё остались средства. Такой счёт закрыть нельзя");
             }
-            _bankAccountRepository.Delete(accountId);
+            if (!_bankAccountRepository.Delete(accountId))
+            {
+                throw new ValidationException("Ошибка: Банковский счёт не удалился");
+            }
         }
 
 
         public double GetCommission(double sum, int fromAccountId, int toAccountId)
         {
-            Get(fromAccountId);
-            Get(toAccountId);
+            if (sum<=0)
+            {
+                throw new ValidationException("Ошибка: Сумма перевода должна быть больше нуля");
+            }
+            if (!_bankAccountRepository.IsBankAccountExist(fromAccountId))
+            {
+                throw new ValidationException("Ошибка: Банковского счёта отправителя нет в БД");
+            }
+            if (!_bankAccountRepository.IsBankAccountExist(toAccountId))
+            {
+                throw new ValidationException("Ошибка: Банковского счёта получателя нет в БД");
+            }
             return _bankAccountRepository.GetCommission(sum, fromAccountId, toAccountId);
         }
 
@@ -90,22 +107,23 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException("Ошибка: указан один и тот же банковский счёт");
             }
 
-            var fromAccount = Get(fromAccountId);
-            if (fromAccount == null)
+            
+            if (!_bankAccountRepository.IsBankAccountExist(fromAccountId))
             {
                 throw new ValidationException("Ошибка: Банковского счёта отправителя нет в БД");
             }
+            var fromAccount = Get(fromAccountId);
             if (!fromAccount.IsActive)
             {
                 throw new ValidationException("Ошибка: Банковский счёт отправителя закрыт");
             }
 
-
-            var toAccount = Get(toAccountId);
-            if (toAccount == null)
+         
+            if (!_bankAccountRepository.IsBankAccountExist(toAccountId))
             {
                 throw new ValidationException("Ошибка: Банковского счёта получателяя нет в БД");
             }
+            var toAccount = Get(toAccountId);
             if (!toAccount.IsActive)
             {
                 throw new ValidationException("Ошибка: Банковский счёт получателя закрыт");
@@ -120,15 +138,16 @@ namespace Minibank.Core.Domains.BankAccounts.Services
 
             double sumTo = _currencyConverter.Convert(sum, fromAccount.Currency, toAccount.Currency);
             _bankAccountRepository.TransferMoney(sumFrom, sumTo, fromAccountId, toAccountId);
+            _bankTransferHistoryRepository.AddBankTransferHistory(new BankTransferHistory(-1, sumFrom, fromAccountId, toAccountId));
         }
 
         public IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
         {
-            if (_userRepository.Get(userId) == null)
+            if (!_userRepository.IsUserExist(userId))
             {
                 throw new ValidationException("Ошибка: Такого пользователя нет в БД");
             }
-            return _bankAccountRepository.GetUserTransferHistory(userId);
+            return _bankTransferHistoryRepository.GetUserTransferHistory(userId);
         }
     }
 }

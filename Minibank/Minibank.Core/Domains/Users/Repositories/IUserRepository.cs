@@ -5,7 +5,8 @@
         User Get(int userId);
         IEnumerable<User> GetAll();
         void Create(User user);
-        void Update(User user);
-        void Delete(int userId);
+        bool Update(User user);
+        bool Delete(int userId);
+        bool IsUserExist(int id);
     }
 }

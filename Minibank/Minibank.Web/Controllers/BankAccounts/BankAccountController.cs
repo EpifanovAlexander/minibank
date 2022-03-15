@@ -2,9 +2,9 @@
 using Minibank.Web.Dtos;
 using Minibank.Core.Domains.BankAccounts.Services;
 using Minibank.Core.Domains.BankAccounts;
+using Minibank.Web.Controllers.TransferHistories;
 
-
-namespace Minibank.Web.Controllers
+namespace Minibank.Web.Controllers.BankAccounts
 {
     [ApiController]
     [Route("[controller]")]
@@ -18,15 +18,15 @@ namespace Minibank.Web.Controllers
         }
 
 
-        [HttpGet("GetAccount/{accountId}")]
-        public BankAccountDto Get(int accountId)
+        [HttpGet("Account/{accountId}")]
+        public BankAccountDto GetBankAccountById(int accountId)
         {
             var model = _bankAccountService.Get(accountId);
             return new BankAccountDto(model.Id, model.UserId, model.Currency, model.Sum);
         }
 
 
-        [HttpGet("GetUserBankAccounts/{userId}")]
+        [HttpGet("UserAccounts/{userId}")]
         public IEnumerable<BankAccountDto> GetUserBankAccounts(int userId)
         {
             return _bankAccountService.GetUserBankAccounts(userId)
@@ -34,7 +34,7 @@ namespace Minibank.Web.Controllers
         }
 
 
-        [HttpGet("GetUserTransferHistory/{userId}")]
+        [HttpGet("TransferHistory/{userId}")]
         public IEnumerable<TransferHistoryDto> GetUserTransferHistory(int userId)
         {
             return _bankAccountService.GetUserTransferHistory(userId)
@@ -42,24 +42,24 @@ namespace Minibank.Web.Controllers
         }
 
 
-        [HttpPost("CreateBankAccount")]
-        public void Create(BankAccountDto model)
+        [HttpPost]
+        public void CreateBankAccount(CreateBankAccountDto model)
         {
             _bankAccountService.Create(new BankAccount(model.UserId, model.Currency, model.Sum));
         }
 
 
-        [HttpPost("TransferMoney")]
+        [HttpPost("Transfer")]
         public void TransferMoney(double sum, int fromAccountId, int toAccountId)
         {
             _bankAccountService.TransferMoney(sum, fromAccountId, toAccountId);
         }
 
 
-        [HttpDelete("DeleteBankAccount/{id}")]
-        public void Delete(int id)
+        [HttpDelete("Account/{accountId}")]
+        public void DeleteBankAccountById(int accountId)
         {
-            _bankAccountService.Delete(id);
+            _bankAccountService.Delete(accountId);
         }
 
     }

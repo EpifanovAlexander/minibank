@@ -1,8 +1,6 @@
-using Microsoft.OpenApi.Models;
 using Minibank.Core;
 using Minibank.Data;
 using Minibank.Web.Middlewares;
-using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);

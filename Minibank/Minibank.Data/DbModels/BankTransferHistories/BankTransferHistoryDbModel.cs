@@ -1,6 +1,4 @@
-﻿using Minibank.Core.Domains.Currencies;
-
-namespace Minibank.Data.DbModels.BankAccounts
+﻿namespace Minibank.Data.DbModels.BankTransferHistories
 {
     public class BankTransferHistoryDbModel
     {

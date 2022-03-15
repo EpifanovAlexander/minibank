@@ -1,4 +1,4 @@
-﻿namespace Minibank.Web.Dtos
+﻿namespace Minibank.Web.Controllers.TransferHistories
 {
     public class TransferHistoryDto
     {
