@@ -1,15 +1,13 @@
-﻿namespace Minibank.Web.Controllers.TransferHistories
+﻿namespace Minibank.Core.Domains.BankTransferHistories
 {
-    public class TransferHistoryDto
+    public class CreateBankTransferHistory
     {
-        public int Id { get; set; }
         public double Sum { get; set; }
         public int FromAccountId { get; set; }
         public int ToAccountId { get; set; }
 
-        public TransferHistoryDto(int id, double sum, int fromAccountId, int toAccountId)
+        public CreateBankTransferHistory(double sum, int fromAccountId, int toAccountId)
         {
-            Id = id;
             Sum = sum;
             FromAccountId = fromAccountId;
             ToAccountId = toAccountId;

@@ -2,11 +2,11 @@
 {
     public interface IUserRepository
     {
-        User Get(int userId);
+        User GetById(int userId);
         IEnumerable<User> GetAll();
-        void Create(User user);
+        void Create(CreateUser user);
         bool Update(User user);
-        bool Delete(int userId);
+        bool DeleteById(int userId);
         bool IsUserExist(int id);
     }
 }

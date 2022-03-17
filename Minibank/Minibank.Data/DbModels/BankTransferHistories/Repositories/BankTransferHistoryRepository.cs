@@ -14,7 +14,7 @@ namespace Minibank.Data.DbModels.BankTransferHistories.Repositories
             _bankAccountRepository = bankAccountRepository;
         }
 
-        public void AddBankTransferHistory(BankTransferHistory history)
+        public void AddBankTransferHistory(CreateBankTransferHistory history)
         {
             var bankTransferHistoryDbModel = new BankTransferHistoryDbModel
             {

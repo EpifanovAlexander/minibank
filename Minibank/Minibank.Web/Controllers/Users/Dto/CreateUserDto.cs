@@ -1,4 +1,4 @@
-﻿namespace Minibank.Web.Controllers.Users
+﻿namespace Minibank.Web.Controllers.Users.Dto
 {
     public class CreateUserDto
     {

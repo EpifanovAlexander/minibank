@@ -11,7 +11,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         private BankAccount ConvertToBankAccount(BankAccountDbModel bankAccount)
         {
             return new BankAccount(bankAccount.Id, bankAccount.UserId, bankAccount.Currency, 
-                bankAccount.IsActive, bankAccount.DateOpening, bankAccount.DateClosing, bankAccount.Sum);
+                bankAccount.IsActive, bankAccount.DateOpening, bankAccount.DateClosing, Math.Round(bankAccount.Sum,2));
         }
 
 
@@ -21,7 +21,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public BankAccount Get(int accountId)
+        public BankAccount GetById(int accountId)
         {
             if (IsBankAccountExist(accountId))
             {
@@ -35,13 +35,12 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         public IEnumerable<BankAccount> GetUserAccounts(int userId)
         {
             return _bankAccountStorage
-                .Where(_account => _account.UserId == userId)
-                .Where(_account => _account.IsActive)
+                .Where(_account => _account.UserId == userId && _account.IsActive)
                 .Select(_account => ConvertToBankAccount(_account));
         }
 
 
-        public void Create(BankAccount account)
+        public void CreateAccount(CreateBankAccount account)
         {
             DateTime now = DateTime.Now;
             var bankAccountDbModel = new BankAccountDbModel
@@ -58,7 +57,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public bool Delete(int accountId)
+        public bool DeleteById(int accountId)
         {
             if (IsBankAccountExist(accountId))
             {
@@ -70,24 +69,28 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public double GetCommission(double sum, int fromAccountId, int toAccountId)
+        public bool CheckUsersOfAccounts(int fromAccountId, int toAccountId)
         {
-            if (_bankAccountStorage
+
+            return _bankAccountStorage
                 .Where(_account => _account.Id == fromAccountId &&
                 _account.UserId == _bankAccountStorage.FirstOrDefault(_toAccount => _toAccount.Id == toAccountId).UserId)
-                .Count() == 0)
-            {
-                return Math.Round(sum * 0.02, 2);
-            }
-            return 0;
+                .Any();
         }
 
 
         public void TransferMoney(double sumFrom, double sumTo, int fromAccountId, int toAccountId)
         {
-            _bankAccountStorage.FirstOrDefault(_account => _account.Id == fromAccountId).Sum -= Math.Round(sumFrom,2);
-            _bankAccountStorage.FirstOrDefault(_account => _account.Id == toAccountId).Sum += Math.Round(sumTo,2);
+            _bankAccountStorage.FirstOrDefault(_account => _account.Id == fromAccountId).Sum -= sumFrom;
+            _bankAccountStorage.FirstOrDefault(_account => _account.Id == toAccountId).Sum += sumTo;
         }
 
+
+        public bool IsUserHaveAccounts(int userId)
+        {
+            return _bankAccountStorage
+                .Where(_account => _account.UserId == userId && _account.IsActive)
+                .Any();
+        }
     }
 }

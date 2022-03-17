@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Minibank.Core.Domains.Users;
 using Minibank.Core.Domains.Users.Services;
+using Minibank.Web.Controllers.Users.Dto;
 
 namespace Minibank.Web.Controllers.Users
 {
@@ -19,7 +20,7 @@ namespace Minibank.Web.Controllers.Users
         [HttpGet("{id}")]
         public UserDto GetUserById(int id)
         {
-            var model = _userService.Get(id);
+            var model = _userService.GetById(id);
             return new UserDto(model.Id, model.Login, model.Email);
         }
 
@@ -34,7 +35,7 @@ namespace Minibank.Web.Controllers.Users
         [HttpPost]
         public void CreateUser(CreateUserDto model)
         {
-            _userService.Create(new User(-1, model.Login, model.Email));
+            _userService.Create(new CreateUser(model.Login, model.Email));
         }
 
 
@@ -50,7 +51,7 @@ namespace Minibank.Web.Controllers.Users
         [HttpDelete("{id}")]
         public void DeleteUserById(int id)
         {
-            _userService.Delete(id);
+            _userService.DeleteById(id);
         }
 
     }

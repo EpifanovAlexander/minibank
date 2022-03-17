@@ -2,7 +2,7 @@
 {
     public interface IBankTransferHistoryRepository
     {
-        void AddBankTransferHistory(BankTransferHistory history);
+        void AddBankTransferHistory(CreateBankTransferHistory history);
         IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId);
     }
 }

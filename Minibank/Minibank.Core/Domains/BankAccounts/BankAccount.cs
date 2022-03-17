@@ -22,12 +22,5 @@ namespace Minibank.Core.Domains.BankAccounts
             DateOpening = dateOpening;
             DateClosing = dateClosing;
         }
-
-        public BankAccount(int userId, Currency currency, double sum = 0)
-        {
-            UserId = userId;
-            Currency = currency;
-            Sum = sum;
-        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Minibank.Web.Dtos;
 using Minibank.Core.Domains.BankAccounts.Services;
 using Minibank.Core.Domains.BankAccounts;
-using Minibank.Web.Controllers.TransferHistories;
+using Minibank.Web.Controllers.TransferHistories.Dto;
+using Minibank.Web.Controllers.BankAccounts.Dto;
 
 namespace Minibank.Web.Controllers.BankAccounts
 {
@@ -21,7 +21,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         [HttpGet("Account/{accountId}")]
         public BankAccountDto GetBankAccountById(int accountId)
         {
-            var model = _bankAccountService.Get(accountId);
+            var model = _bankAccountService.GetById(accountId);
             return new BankAccountDto(model.Id, model.UserId, model.Currency, model.Sum);
         }
 
@@ -45,7 +45,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         [HttpPost]
         public void CreateBankAccount(CreateBankAccountDto model)
         {
-            _bankAccountService.Create(new BankAccount(model.UserId, model.Currency, model.Sum));
+            _bankAccountService.Create(new CreateBankAccount(model.UserId, model.Currency, model.Sum));
         }
 
 
@@ -59,7 +59,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         [HttpDelete("Account/{accountId}")]
         public void DeleteBankAccountById(int accountId)
         {
-            _bankAccountService.Delete(accountId);
+            _bankAccountService.DeleteById(accountId);
         }
 
     }

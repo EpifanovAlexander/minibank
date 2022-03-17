@@ -13,7 +13,7 @@ namespace Minibank.Data.DbModels.Users.Repositories
             return _userStorage.Exists(_user => _user.Id == id);
         }
 
-        public User Get(int id)
+        public User GetById(int id)
         {
             if (IsUserExist(id))
             {
@@ -28,7 +28,7 @@ namespace Minibank.Data.DbModels.Users.Repositories
             return _userStorage.Select(_user => new User(_user.Id, _user.Login, _user.Email));
         }
 
-        public void Create(User user)
+        public void Create(CreateUser user)
         {
             var userDbModel = new UserDbModel
             {
@@ -51,7 +51,7 @@ namespace Minibank.Data.DbModels.Users.Repositories
             return false;
         }
 
-        public bool Delete(int id)
+        public bool DeleteById(int id)
         {
             if (IsUserExist(id))
             {

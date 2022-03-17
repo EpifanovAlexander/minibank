@@ -15,9 +15,9 @@ namespace Minibank.Core.Domains.Users.Services
             _userRepository = userRepository;
         }
 
-        public User Get(int id)
+        public User GetById(int id)
         {
-            return _userRepository.Get(id) ?? throw new ValidationException("Такого пользователя нет в БД");
+            return _userRepository.GetById(id) ?? throw new ValidationException("Такого пользователя нет в БД");
         }
 
         public IEnumerable<User> GetAll()
@@ -25,30 +25,34 @@ namespace Minibank.Core.Domains.Users.Services
             return _userRepository.GetAll();
         }
 
-        public void Create(User user)
+        public void Create(CreateUser user)
         {
             if (user.Login == null || user.Login.Length > 20)
             {
                 throw new ValidationException("Не задан логин или длина более 20 символов");
             }
+
             _userRepository.Create(user);
         }
 
         public void Update(User user)
         {
-            if (!_userRepository.Update(user))
+            bool isUserUpdated = _userRepository.Update(user);
+            if (!isUserUpdated)
             {
                 throw new ValidationException("Пользователь не обновился");
             }
         }
 
-        public void Delete(int id)
+        public void DeleteById(int userId)
         {
-            if (_bankAccountRepository.GetUserAccounts(id).Any())
+            if (_bankAccountRepository.IsUserHaveAccounts(userId))
             {
                 throw new ValidationException("У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя");
             }
-            if (!_userRepository.Delete(id))
+
+            bool isUserDeleted = _userRepository.DeleteById(userId);
+            if (!isUserDeleted)
             {
                 throw new ValidationException("Пользователь не удалился");
             }
