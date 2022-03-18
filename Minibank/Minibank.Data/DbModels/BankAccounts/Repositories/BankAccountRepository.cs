@@ -1,19 +1,13 @@
 ﻿using Minibank.Core.Domains.BankAccounts;
 using Minibank.Core.Domains.BankAccounts.Repositories;
+using Minibank.Core.Exceptions;
+using Minibank.Data.DbModels.BankAccounts.Mappers;
 
 namespace Minibank.Data.DbModels.BankAccounts.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
         private static List<BankAccountDbModel> _bankAccountStorage = new List<BankAccountDbModel>();
-
-
-        private BankAccount ConvertToBankAccount(BankAccountDbModel bankAccount)
-        {
-            return new BankAccount(bankAccount.Id, bankAccount.UserId, bankAccount.Currency, 
-                bankAccount.IsActive, bankAccount.DateOpening, bankAccount.DateClosing, Math.Round(bankAccount.Sum,2));
-        }
-
 
         public bool IsBankAccountExist(int id)
         {
@@ -26,7 +20,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
             if (IsBankAccountExist(accountId))
             {
                 var bankAccount = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
-                return ConvertToBankAccount(bankAccount);
+                return BankAccountMapper.ConvertToBankAccount(bankAccount);
             }
             return null;
         }
@@ -36,7 +30,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         {
             return _bankAccountStorage
                 .Where(_account => _account.UserId == userId && _account.IsActive)
-                .Select(_account => ConvertToBankAccount(_account));
+                .Select(_account => BankAccountMapper.ConvertToBankAccount(_account));
         }
 
 
@@ -57,15 +51,15 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public bool DeleteById(int accountId)
+        public void DeleteById(int accountId)
         {
-            if (IsBankAccountExist(accountId))
+            var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
+            if (bankAccountDbModel == null)
             {
-                var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
-                bankAccountDbModel.IsActive = false;
-                return true;
+                throw new ValidationException("Аккаунт не найден");
             }
-            return false;
+
+            bankAccountDbModel.IsActive = false;
         }
 
 

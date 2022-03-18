@@ -1,6 +1,6 @@
 ﻿using Minibank.Core.Domains.Users;
 using Minibank.Core.Domains.Users.Repositories;
-
+using Minibank.Core.Exceptions;
 
 namespace Minibank.Data.DbModels.Users.Repositories
 {
@@ -39,26 +39,26 @@ namespace Minibank.Data.DbModels.Users.Repositories
             _userStorage.Add(userDbModel);
         }
 
-        public bool Update(User user)
+        public void Update(User user)
         {
-            if (IsUserExist(user.Id))
+            var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == user.Id);
+            if (userDbModel == null)
             {
-                var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == user.Id);
-                userDbModel.Login = user.Login;
-                userDbModel.Email = user.Email;
-                return true;
+                throw new ValidationException("Пользователь не найден");
             }
-            return false;
+
+            userDbModel.Login = user.Login;
+            userDbModel.Email = user.Email;
         }
 
-        public bool DeleteById(int id)
+        public void DeleteById(int id)
         {
-            if (IsUserExist(id))
+            if (!IsUserExist(id))
             {
-                _userStorage.Remove(_userStorage.FirstOrDefault(_user => _user.Id == id));
-                return true;
+                throw new ValidationException("Пользователь не найден");
             }
-            return false;
+            
+            _userStorage.Remove(_userStorage.FirstOrDefault(_user => _user.Id == id));
         }
     }
 }

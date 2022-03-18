@@ -79,11 +79,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException("Ошибка: На данном банковском счёте ещё остались средства. Такой счёт закрыть нельзя");
             }
 
-            bool isAccountDeleted = _bankAccountRepository.DeleteById(accountId);
-            if (!isAccountDeleted)
-            {
-                throw new ValidationException("Ошибка: Банковский счёт не удалился");
-            }
+            _bankAccountRepository.DeleteById(accountId);
         }
 
 
@@ -162,15 +158,5 @@ namespace Minibank.Core.Domains.BankAccounts.Services
             _bankTransferHistoryRepository.AddBankTransferHistory(new CreateBankTransferHistory(sumFrom, fromAccountId, toAccountId));
         }
 
-        public IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
-        {
-            bool isUserExist = _userRepository.IsUserExist(userId);
-            if (!isUserExist)
-            {
-                throw new ValidationException("Ошибка: Такого пользователя нет в БД");
-            }
-
-            return _bankTransferHistoryRepository.GetUserTransferHistory(userId);
-        }
     }
 }

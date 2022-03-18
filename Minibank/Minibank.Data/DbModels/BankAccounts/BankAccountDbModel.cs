@@ -10,6 +10,6 @@ namespace Minibank.Data.DbModels.BankAccounts
         public Currency Currency { get; set; }
         public bool IsActive { get; set; }
         public DateTime DateOpening { get; set; }
-        public DateTime DateClosing { get; set; }
+        public DateTime? DateClosing { get; set; }
     }
 }

@@ -1,24 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Minibank.Core.Domains.BankAccounts.Services;
 using Minibank.Core.Domains.BankAccounts;
-using Minibank.Web.Controllers.TransferHistories.Dto;
 using Minibank.Web.Controllers.BankAccounts.Dto;
 
 namespace Minibank.Web.Controllers.BankAccounts
 {
     [ApiController]
     [Route("[controller]")]
-    public class BankAccountController : ControllerBase
+    public class BankAccountsController : ControllerBase
     {
         private readonly IBankAccountService _bankAccountService;
 
-        public BankAccountController(IBankAccountService bankAccountService)
+        public BankAccountsController(IBankAccountService bankAccountService)
         {
             _bankAccountService = bankAccountService;
         }
 
 
-        [HttpGet("Account/{accountId}")]
+        [HttpGet("/{accountId}")]
         public BankAccountDto GetBankAccountById(int accountId)
         {
             var model = _bankAccountService.GetById(accountId);
@@ -26,19 +25,11 @@ namespace Minibank.Web.Controllers.BankAccounts
         }
 
 
-        [HttpGet("UserAccounts/{userId}")]
+        [HttpGet("User/{userId}")]
         public IEnumerable<BankAccountDto> GetUserBankAccounts(int userId)
         {
             return _bankAccountService.GetUserBankAccounts(userId)
                 .Select(model => new BankAccountDto(model.Id, model.UserId, model.Currency, model.Sum));
-        }
-
-
-        [HttpGet("TransferHistory/{userId}")]
-        public IEnumerable<TransferHistoryDto> GetUserTransferHistory(int userId)
-        {
-            return _bankAccountService.GetUserTransferHistory(userId)
-                .Select(model => new TransferHistoryDto(model.Id, model.Sum, model.FromAccountId, model.ToAccountId));
         }
 
 
@@ -56,7 +47,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         }
 
 
-        [HttpDelete("Account/{accountId}")]
+        [HttpDelete("/{accountId}")]
         public void DeleteBankAccountById(int accountId)
         {
             _bankAccountService.DeleteById(accountId);

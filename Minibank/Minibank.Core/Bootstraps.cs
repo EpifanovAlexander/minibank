@@ -3,6 +3,7 @@ using Minibank.Core.Domains.Currencies.Services;
 using Minibank.Core.Domains.Currencies;
 using Minibank.Core.Domains.Users.Services;
 using Minibank.Core.Domains.BankAccounts.Services;
+using Minibank.Core.Domains.BankTransferHistories.Services;
 
 namespace Minibank.Core
 {
@@ -13,6 +14,7 @@ namespace Minibank.Core
             services.AddScoped<ICurrencyConverter, CurrencyConverter>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBankAccountService, BankAccountService>();
+            services.AddScoped<IBankTransferHistoryService, BankTransferHistoryService>();
             return services;
         }
     }

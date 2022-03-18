@@ -24,6 +24,7 @@ namespace Minibank.Web.Controllers.Users
             return new UserDto(model.Id, model.Login, model.Email);
         }
 
+
         [HttpGet]
         public IEnumerable<UserDto> GetAllUsers()
         {
@@ -39,13 +40,11 @@ namespace Minibank.Web.Controllers.Users
         }
 
 
-
         [HttpPut("{id}")]
         public void UpdateUser(int id, UserDto model)
         {
             _userService.Update(new User(id, model.Login, model.Email));
         }
-
  
 
         [HttpDelete("{id}")]

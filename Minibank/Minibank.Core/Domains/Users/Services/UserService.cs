@@ -27,7 +27,7 @@ namespace Minibank.Core.Domains.Users.Services
 
         public void Create(CreateUser user)
         {
-            if (user.Login == null || user.Login.Length > 20)
+            if (string.IsNullOrEmpty(user.Login) || user.Login.Length > 20)
             {
                 throw new ValidationException("Не задан логин или длина более 20 символов");
             }
@@ -37,11 +37,12 @@ namespace Minibank.Core.Domains.Users.Services
 
         public void Update(User user)
         {
-            bool isUserUpdated = _userRepository.Update(user);
-            if (!isUserUpdated)
+            if (string.IsNullOrEmpty(user.Login) || user.Login.Length > 20)
             {
-                throw new ValidationException("Пользователь не обновился");
+                throw new ValidationException("Не задан логин или длина более 20 символов");
             }
+
+            _userRepository.Update(user);
         }
 
         public void DeleteById(int userId)
@@ -51,11 +52,7 @@ namespace Minibank.Core.Domains.Users.Services
                 throw new ValidationException("У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя");
             }
 
-            bool isUserDeleted = _userRepository.DeleteById(userId);
-            if (!isUserDeleted)
-            {
-                throw new ValidationException("Пользователь не удалился");
-            }
+            _userRepository.DeleteById(userId);
         }
     }
 }
