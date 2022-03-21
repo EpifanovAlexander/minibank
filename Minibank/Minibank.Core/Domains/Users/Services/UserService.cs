@@ -17,7 +17,8 @@ namespace Minibank.Core.Domains.Users.Services
 
         public User GetById(int id)
         {
-            return _userRepository.GetById(id) ?? throw new ValidationException("Такого пользователя нет в БД");
+            return _userRepository.GetById(id)
+                ?? throw new ValidationException($"Такого пользователя нет в БД. Id пользователя: {id}");
         }
 
         public IEnumerable<User> GetAll()

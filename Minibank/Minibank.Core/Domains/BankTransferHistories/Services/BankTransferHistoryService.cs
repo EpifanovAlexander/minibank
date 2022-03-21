@@ -17,10 +17,10 @@ namespace Minibank.Core.Domains.BankTransferHistories.Services
 
         public IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
         {
-            bool isUserExist = _userRepository.IsUserExist(userId);
+            bool isUserExist = _userRepository.Exists(userId);
             if (!isUserExist)
             {
-                throw new ValidationException("Ошибка: Такого пользователя нет в БД");
+                throw new ValidationException($"Ошибка: Такого пользователя нет в БД. Id пользователя: {userId}");
             }
 
             return _bankTransferHistoryRepository.GetUserTransferHistory(userId);

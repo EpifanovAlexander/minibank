@@ -8,14 +8,14 @@ namespace Minibank.Data.DbModels.Users.Repositories
     {
         private static List<UserDbModel> _userStorage = new List<UserDbModel>();
 
-        public bool IsUserExist(int id)
+        public bool Exists(int id)
         {
             return _userStorage.Exists(_user => _user.Id == id);
         }
 
         public User GetById(int id)
         {
-            if (IsUserExist(id))
+            if (Exists(id))
             {
                 var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == id);
                 return new User(userDbModel.Id, userDbModel.Login, userDbModel.Email);
@@ -44,7 +44,7 @@ namespace Minibank.Data.DbModels.Users.Repositories
             var userDbModel = _userStorage.FirstOrDefault(_user => _user.Id == user.Id);
             if (userDbModel == null)
             {
-                throw new ValidationException("Пользователь не найден");
+                throw new ValidationException($"Пользователь не найден. Id пользователя: {user.Id}");
             }
 
             userDbModel.Login = user.Login;
@@ -53,9 +53,9 @@ namespace Minibank.Data.DbModels.Users.Repositories
 
         public void DeleteById(int id)
         {
-            if (!IsUserExist(id))
+            if (!Exists(id))
             {
-                throw new ValidationException("Пользователь не найден");
+                throw new ValidationException($"Пользователь не найден. Id пользователя: {id}");
             }
             
             _userStorage.Remove(_userStorage.FirstOrDefault(_user => _user.Id == id));

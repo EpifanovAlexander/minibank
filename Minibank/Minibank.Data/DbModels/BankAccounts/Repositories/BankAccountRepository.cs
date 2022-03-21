@@ -9,7 +9,7 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
     {
         private static List<BankAccountDbModel> _bankAccountStorage = new List<BankAccountDbModel>();
 
-        public bool IsBankAccountExist(int id)
+        public bool Exists(int id)
         {
             return _bankAccountStorage.Exists(account => account.Id == id);
         }
@@ -17,10 +17,10 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
 
         public BankAccount GetById(int accountId)
         {
-            if (IsBankAccountExist(accountId))
+            if (Exists(accountId))
             {
                 var bankAccount = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
-                return BankAccountMapper.ConvertToBankAccount(bankAccount);
+                return BankAccountMapper.ToModel(bankAccount);
             }
             return null;
         }
@@ -30,11 +30,11 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         {
             return _bankAccountStorage
                 .Where(_account => _account.UserId == userId && _account.IsActive)
-                .Select(_account => BankAccountMapper.ConvertToBankAccount(_account));
+                .Select(_account => BankAccountMapper.ToModel(_account));
         }
 
 
-        public void CreateAccount(CreateBankAccount account)
+        public void Create(CreateBankAccount account)
         {
             DateTime now = DateTime.Now;
             var bankAccountDbModel = new BankAccountDbModel
@@ -51,32 +51,28 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
+        public void Update(BankAccount account)
+        {
+            var accountDb = _bankAccountStorage.FirstOrDefault(_account => _account.Id == account.Id);
+            if (accountDb == null)
+            {
+                throw new ValidationException($"Банковский счёт не найден. Id: {account.Id}");
+            }
+
+            int accountIndex = _bankAccountStorage.IndexOf(accountDb);
+            _bankAccountStorage[accountIndex] = BankAccountMapper.ToDbModel(account);
+        }
+
+
         public void DeleteById(int accountId)
         {
             var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(_account => _account.Id == accountId);
             if (bankAccountDbModel == null)
             {
-                throw new ValidationException("Аккаунт не найден");
+                throw new ValidationException($"Банковский счёт не найден. Id: {accountId}");
             }
 
             bankAccountDbModel.IsActive = false;
-        }
-
-
-        public bool CheckUsersOfAccounts(int fromAccountId, int toAccountId)
-        {
-
-            return _bankAccountStorage
-                .Where(_account => _account.Id == fromAccountId &&
-                _account.UserId == _bankAccountStorage.FirstOrDefault(_toAccount => _toAccount.Id == toAccountId).UserId)
-                .Any();
-        }
-
-
-        public void TransferMoney(double sumFrom, double sumTo, int fromAccountId, int toAccountId)
-        {
-            _bankAccountStorage.FirstOrDefault(_account => _account.Id == fromAccountId).Sum -= sumFrom;
-            _bankAccountStorage.FirstOrDefault(_account => _account.Id == toAccountId).Sum += sumTo;
         }
 
 

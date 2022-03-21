@@ -7,6 +7,6 @@
         void Create(CreateUser user);
         void Update(User user);
         void DeleteById(int userId);
-        bool IsUserExist(int id);
+        bool Exists(int id);
     }
 }
