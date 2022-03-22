@@ -25,7 +25,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         }
 
 
-        [HttpGet("User/{userId}")]
+        [HttpGet("user/{userId}")]
         public IEnumerable<BankAccountDto> GetUserBankAccounts(int userId)
         {
             return _bankAccountService.GetUserBankAccounts(userId)
@@ -40,7 +40,7 @@ namespace Minibank.Web.Controllers.BankAccounts
         }
 
 
-        [HttpPost("Transfer")]
+        [HttpPost("transfer")]
         public void TransferMoney(double sum, int fromAccountId, int toAccountId)
         {
             _bankAccountService.TransferMoney(sum, fromAccountId, toAccountId);

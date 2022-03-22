@@ -6,7 +6,7 @@ namespace Minibank.Data.DbModels.BankTransferHistories.Repositories
 {
     public class BankTransferHistoryRepository : IBankTransferHistoryRepository
     {
-        private static List<BankTransferHistoryDbModel> _transferHistoryStorage = new List<BankTransferHistoryDbModel>();
+        private static readonly List<BankTransferHistoryDbModel> _transferHistoryStorage = new();
         private readonly IBankAccountRepository _bankAccountRepository;
 
         public BankTransferHistoryRepository(IBankAccountRepository bankAccountRepository)

@@ -2,7 +2,7 @@
 {
     public interface IBankAccountRepository
     {
-        BankAccount GetById(int accountId);
+        BankAccount? GetById(int accountId);
         IEnumerable<BankAccount> GetUserAccounts(int userId);
         void Create(CreateBankAccount account);
         void Update(BankAccount account);

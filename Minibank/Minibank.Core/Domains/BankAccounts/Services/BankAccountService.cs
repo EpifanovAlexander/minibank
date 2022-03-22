@@ -68,13 +68,12 @@ namespace Minibank.Core.Domains.BankAccounts.Services
 
         public void DeleteById(int accountId)
         {
-            bool isBankAccountExist = _bankAccountRepository.Exists(accountId);
-            if (!isBankAccountExist)
+            BankAccount? account = _bankAccountRepository.GetById(accountId);
+            if (account == null)
             {
                 throw new ValidationException($"Ошибка: Такого банковского счёта нет в БД. Id счёта: {accountId}");
             }
 
-            BankAccount account = _bankAccountRepository.GetById(accountId);
             if (account.Sum != 0)
             {
                 throw new ValidationException("Ошибка: На данном банковском счёте ещё остались средства. Такой счёт закрыть нельзя");

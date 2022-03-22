@@ -17,13 +17,17 @@ namespace Minibank.Data.HttpClients
 
         public double GetExchangeRate(Currency fromCurrency, Currency toCurrency)
         {
-            var currenciesDictionary = _httpClient.GetFromJsonAsync<CourseResponse>("daily_json.js")
-                .GetAwaiter().GetResult().Valute;
+            var response = _httpClient.GetFromJsonAsync<CourseResponse>("daily_json.js").GetAwaiter().GetResult();
+            if (response == null)
+            {
+                throw new ValidationException("Ошибка: файл с данными о курсах валют не найден");
+            }
 
+            var currenciesDictionary = response.Valute;
             currenciesDictionary.Add("RUB", new ValueItem() { Value = 1 });
 
-            ValueItem itemFromCurrency = new();
-            if (!currenciesDictionary.TryGetValue(fromCurrency.ToString(), out itemFromCurrency))
+            ValueItem? itemFromCurrency = currenciesDictionary.GetValueOrDefault(fromCurrency.ToString());
+            if (itemFromCurrency==null)
             {
                 throw new ValidationException("Ошибка: неверно указана начальная валюта");
             }
@@ -33,8 +37,8 @@ namespace Minibank.Data.HttpClients
                 return 1;
             }
 
-            ValueItem itemToCurrency = new();
-            if (!currenciesDictionary.TryGetValue(toCurrency.ToString(), out itemToCurrency))
+            ValueItem? itemToCurrency = currenciesDictionary.GetValueOrDefault(toCurrency.ToString());
+            if (itemToCurrency==null)
             {
                 throw new ValidationException("Ошибка: неверно указана конечная валюта");
             }
