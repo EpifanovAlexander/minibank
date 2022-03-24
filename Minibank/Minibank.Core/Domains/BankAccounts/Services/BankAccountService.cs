@@ -114,6 +114,12 @@ namespace Minibank.Core.Domains.BankAccounts.Services
         }
 
 
+        private double GetCommission(double sum, BankAccount fromAccount, BankAccount toAccount)
+        {
+            return (fromAccount.UserId == toAccount.UserId) ? 0 : Math.Round(sum * 0.02, 2);
+        }
+
+
         public void TransferMoney(double sum, int fromAccountId, int toAccountId)
         {
             if (sum<=0)
@@ -150,22 +156,21 @@ namespace Minibank.Core.Domains.BankAccounts.Services
             }
 
 
-            double sumFrom = sum + GetCommission(sum, fromAccountId, toAccountId);
-            if (fromAccount.Sum < sumFrom)
+            if (fromAccount.Sum < sum)
             {
                 throw new ValidationException("Ошибка: Недостаточный баланс на счету отправителя");
             }
 
+            double sumWithComission = sum - GetCommission(sum, fromAccount, toAccount);
+            double sumTo = _currencyConverter.Convert(sumWithComission, fromAccount.Currency, toAccount.Currency);
 
-            double sumTo = _currencyConverter.Convert(sum, fromAccount.Currency, toAccount.Currency);
-
-            fromAccount.Sum = Math.Round(fromAccount.Sum - sumFrom, 2);
+            fromAccount.Sum = Math.Round(fromAccount.Sum - sum, 2);
             toAccount.Sum = Math.Round(toAccount.Sum + sumTo, 2);
 
             _bankAccountRepository.Update(fromAccount);
             _bankAccountRepository.Update(toAccount);
 
-            _bankTransferHistoryRepository.Add(new CreateBankTransferHistory(sumFrom, fromAccountId, toAccountId));
+            _bankTransferHistoryRepository.Add(new CreateBankTransferHistory(sum, fromAccountId, toAccountId));
         }
 
     }
