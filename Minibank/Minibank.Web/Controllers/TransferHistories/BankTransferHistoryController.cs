@@ -17,10 +17,14 @@ namespace Minibank.Web.Controllers.TransferHistories
 
 
         [HttpGet("{userId}")]
-        public IEnumerable<TransferHistoryDto> GetUserTransferHistory(int userId)
+        public async IAsyncEnumerable<TransferHistoryDto> GetUserTransferHistory(int userId)
         {
-            return _bankTransferHistoryService.GetUserTransferHistory(userId)
-                .Select(model => new TransferHistoryDto(model.Id, model.Sum, model.FromAccountId, model.ToAccountId));
+            var userHistories = _bankTransferHistoryService.GetUserTransferHistory(userId);
+
+            await foreach (var history in userHistories)
+            {
+                yield return new TransferHistoryDto(history.Id, history.Sum, history.FromAccountId, history.ToAccountId);
+            }
         }
 
     }

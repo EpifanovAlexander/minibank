@@ -15,15 +15,21 @@ namespace Minibank.Core.Domains.BankTransferHistories.Services
             _bankTransferHistoryRepository = bankTransferHistoryRepository;
         }
 
-        public IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
+        public async IAsyncEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
         {
-            bool isUserExist = _userRepository.Exists(userId);
+            bool isUserExist = await _userRepository.Exists(userId);
             if (!isUserExist)
             {
                 throw new ValidationException($"Ошибка: Такого пользователя нет в БД. Id пользователя: {userId}");
             }
 
-            return _bankTransferHistoryRepository.GetUserTransferHistory(userId);
+            var histories = _bankTransferHistoryRepository.GetUserTransferHistory(userId);
+
+            await foreach (var historiy in histories)
+            {
+                yield return historiy;
+            }
+
         }
     }
 }

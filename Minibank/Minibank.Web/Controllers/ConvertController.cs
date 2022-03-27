@@ -16,9 +16,9 @@ namespace Minibank.Web.Controllers
 
 
         [HttpGet]
-        public double Convert(int amount, Currency fromCurrency, Currency toCurrency)
+        public async Task<double> Convert(int amount, Currency fromCurrency, Currency toCurrency)
         {
-            return _currencyConverter.Convert(amount, fromCurrency, toCurrency);
+            return await _currencyConverter.Convert(amount, fromCurrency, toCurrency);
         }
     }
 }

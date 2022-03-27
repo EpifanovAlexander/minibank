@@ -1,4 +1,5 @@
-﻿using Minibank.Core.Domains.BankAccounts;
+﻿using Microsoft.EntityFrameworkCore;
+using Minibank.Core.Domains.BankAccounts;
 using Minibank.Core.Domains.BankAccounts.Repositories;
 using Minibank.Core.Exceptions;
 using Minibank.Data.DbModels.BankAccounts.Mappers;
@@ -7,78 +8,105 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
-        private static readonly List<BankAccountDbModel> _bankAccountStorage = new();
+        private readonly MinibankContext _context;
 
-        public bool Exists(int id)
+        public BankAccountRepository(MinibankContext context)
         {
-            return _bankAccountStorage.Exists(account => account.Id == id);
+            _context = context;
         }
 
 
-        public BankAccount? GetById(int accountId)
+        public async Task<bool> Exists(int id)
         {
-            var bankAccount = _bankAccountStorage.FirstOrDefault(account => account.Id == accountId);
-            if (bankAccount == null)
+            return await _context.BankAccounts.AnyAsync(account => account.Id == id); 
+        }
+
+
+        public async Task<BankAccount?> GetById(int accountId)
+        {
+            var bankAccountDbModel = await _context.BankAccounts
+                .Include(it => it.User)
+                .Include(it => it.FromTransferHistories)
+                .Include(it => it.ToTransferHistories)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(account => account.Id == accountId);
+
+            if (bankAccountDbModel == null)
             {
                 return null;               
             }
-            return BankAccountMapper.ToModel(bankAccount);
+            return BankAccountMapper.ToModel(bankAccountDbModel);
         }
 
 
-        public IEnumerable<BankAccount> GetUserAccounts(int userId)
+        public async IAsyncEnumerable<BankAccount> GetUserAccounts(int userId)
         {
-            return _bankAccountStorage
-                .Where(account => account.UserId == userId && account.IsActive)
-                .Select(account => BankAccountMapper.ToModel(account));
+            var accounts = await _context.BankAccounts
+                 .Where(account => account.UserId == userId && account.IsActive)
+                 .Include(it => it.User)
+                 .Include(it => it.FromTransferHistories)
+                 .Include(it => it.ToTransferHistories)
+                 .AsNoTracking()
+                 .ToListAsync();
+
+            foreach (var account in accounts)
+            {
+                yield return BankAccountMapper.ToModel(account);
+            }
         }
 
 
-        public void Create(CreateBankAccount account)
+        public async Task Create(CreateBankAccount account)
         {
             DateTime now = DateTime.Now;
             var bankAccountDbModel = new BankAccountDbModel
             {
-                Id = (_bankAccountStorage.Count == 0) ? 0 : _bankAccountStorage.Max(a => a.Id) + 1,
+                Id = 0,
                 UserId = account.UserId,
                 Sum = account.Sum,
                 Currency = account.Currency,
                 IsActive = true,
                 DateOpening = now,
-                DateClosing = new DateTime(now.Year+4, now.Month, now.Day, now.Hour, now.Minute, now.Second)
+                DateClosing = new DateTime(now.Year + 4, now.Month, now.Day, now.Hour, now.Minute, now.Second)
             };
-            _bankAccountStorage.Add(bankAccountDbModel);
+
+            await _context.BankAccounts.AddAsync(bankAccountDbModel);
         }
 
 
-        public void Update(BankAccount bankAccount)
+        public async Task Update(BankAccount bankAccount)
         {
-            var accountDb = _bankAccountStorage.FirstOrDefault(account => account.Id == bankAccount.Id);
-            if (accountDb == null)
+            var bankAccountDbModel = await _context.BankAccounts.AsNoTracking()
+                .FirstOrDefaultAsync(it => it.Id == bankAccount.Id);
+
+            if (bankAccountDbModel == null)
             {
                 throw new ValidationException($"Банковский счёт не найден. Id счёта: {bankAccount.Id}");
             }
 
-            int accountIndex = _bankAccountStorage.IndexOf(accountDb);
-            _bankAccountStorage[accountIndex] = BankAccountMapper.ToDbModel(bankAccount);
+            bankAccountDbModel = BankAccountMapper.ToDbModel(bankAccount);
+            _context.Entry(bankAccountDbModel).State = EntityState.Modified;
         }
 
 
-        public void DeleteById(int accountId)
+        public async Task DeleteById(int accountId)
         {
-            var bankAccountDbModel = _bankAccountStorage.FirstOrDefault(account => account.Id == accountId);
+            var bankAccountDbModel = await _context.BankAccounts
+                .FirstOrDefaultAsync(it => it.Id == accountId);
+
             if (bankAccountDbModel == null)
             {
                 throw new ValidationException($"Банковский счёт не найден. Id счёта: {accountId}");
             }
 
             bankAccountDbModel.IsActive = false;
+            _context.Entry(bankAccountDbModel).State = EntityState.Modified;
         }
 
 
-        public bool IsUserHaveAccounts(int userId)
+        public async Task<bool> IsUserHaveAccounts(int userId)
         {
-            return _bankAccountStorage.Any(account => account.UserId == userId && account.IsActive);
+            return await _context.BankAccounts.AnyAsync(account => account.UserId == userId && account.IsActive);
         }
     }
 }

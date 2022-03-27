@@ -18,39 +18,43 @@ namespace Minibank.Web.Controllers.Users
 
 
         [HttpGet("{id}")]
-        public UserDto GetUserById(int id)
+        public async Task<UserDto> GetUserById(int id)
         {
-            var model = _userService.GetById(id);
+            var model = await _userService.GetById(id);
             return new UserDto(model.Id, model.Login, model.Email);
         }
 
 
         [HttpGet]
-        public IEnumerable<UserDto> GetAllUsers()
+        public async IAsyncEnumerable<UserDto> GetAllUsers()
         {
-            return _userService.GetAll()
-                .Select(user => new UserDto(user.Id, user.Login, user.Email));
+            var users = _userService.GetAll();
+
+            await foreach (var user in users)
+            {
+                yield return new UserDto(user.Id, user.Login, user.Email);
+            }
         }
 
 
         [HttpPost]
-        public void CreateUser(CreateUserDto model)
+        public async Task CreateUser(CreateUserDto model)
         {
-            _userService.Create(new CreateUser(model.Login, model.Email));
+            await _userService.Create(new CreateUser(model.Login, model.Email));
         }
 
 
         [HttpPut("{id}")]
-        public void UpdateUser(int id, UserDto model)
+        public async Task UpdateUser(int id, CreateUserDto model)
         {
-            _userService.Update(new User(id, model.Login, model.Email));
+            await _userService.Update(new User(id, model.Login, model.Email));
         }
  
 
         [HttpDelete("{id}")]
-        public void DeleteUserById(int id)
+        public async Task DeleteUserById(int id)
         {
-            _userService.DeleteById(id);
+            await _userService.DeleteById(id);
         }
 
     }

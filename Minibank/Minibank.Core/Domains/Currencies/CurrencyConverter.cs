@@ -12,14 +12,14 @@ namespace Minibank.Core.Domains.Currencies
             _currencyRateService = currencyRateService;
         }
 
-        public double Convert(double amount, Currency fromCurrency, Currency toCurrency)
+        public async Task<double> Convert(double amount, Currency fromCurrency, Currency toCurrency)
         {
             if (amount < 0)
             {
                 throw new ValidationException("Ошибка: указана отрицательная сумма для конвертирования");
             }
 
-            double exchangeRate = _currencyRateService.GetExchangeRate(fromCurrency, toCurrency);
+            double exchangeRate = await _currencyRateService.GetExchangeRate(fromCurrency, toCurrency);
             return Math.Round(amount*exchangeRate, 2);
         }
     }

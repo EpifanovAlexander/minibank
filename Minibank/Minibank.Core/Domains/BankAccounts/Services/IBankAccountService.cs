@@ -1,14 +1,12 @@
-﻿using Minibank.Core.Domains.BankTransferHistories;
-
-namespace Minibank.Core.Domains.BankAccounts.Services
+﻿namespace Minibank.Core.Domains.BankAccounts.Services
 {
     public interface IBankAccountService
     {
-        BankAccount GetById(int accountId);
-        IEnumerable<BankAccount> GetUserBankAccounts(int userId);
-        void Create(CreateBankAccount account);
-        void DeleteById(int accountId);
-        double GetCommission(double sum, int fromAccountId, int toAccountId);
-        void TransferMoney(double sum, int fromAccountId, int toAccountId);
+        Task<BankAccount> GetById(int accountId);
+        IAsyncEnumerable<BankAccount> GetUserBankAccounts(int userId);
+        Task Create(CreateBankAccount account);
+        Task DeleteById(int accountId);
+        Task<double> GetCommission(double sum, int fromAccountId, int toAccountId);
+        Task TransferMoney(double sum, int fromAccountId, int toAccountId);
     }
 }

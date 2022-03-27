@@ -2,6 +2,6 @@
 {
     public interface IBankTransferHistoryService
     {
-        IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId);
+        IAsyncEnumerable<BankTransferHistory> GetUserTransferHistory(int userId);
     }
 }
