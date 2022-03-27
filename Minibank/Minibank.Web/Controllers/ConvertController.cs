@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Minibank.Core.Interfaces;
+using Minibank.Core.Domains.Currencies.Services;
+using Minibank.Core.Domains.Currencies;
 
 namespace Minibank.Web.Controllers
 {
@@ -7,17 +8,17 @@ namespace Minibank.Web.Controllers
     [Route("[controller]")]
     public class ConvertController : ControllerBase
     {
-        private readonly ICurrencyConverter _converter;
-        public ConvertController(ICurrencyConverter converter)
+        private readonly ICurrencyConverter _currencyConverter;
+        public ConvertController(ICurrencyConverter currencyConverter)
         {
-            _converter = converter;
+            _currencyConverter = currencyConverter;
         }
 
 
-        [HttpGet(Name = "GetConvertResult")]
-        public double Get(int sum, string currency)
+        [HttpGet]
+        public double Convert(int amount, Currency fromCurrency, Currency toCurrency)
         {
-            return _converter.Convert(sum, currency);
+            return _currencyConverter.Convert(amount, fromCurrency, toCurrency);
         }
     }
 }

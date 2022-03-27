@@ -1,5 +1,4 @@
 using Minibank.Core;
-using Minibank.Core.Interfaces;
 using Minibank.Data;
 using Minibank.Web.Middlewares;
 
@@ -12,14 +11,37 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICurrencyRateService, CurrencyService>();
-builder.Services.AddScoped<ICurrencyConverter, CurrencyConverter>();
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Minibank", Version = "v1" });
+//    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+//});
+
+
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.SwaggerDoc("v1", new OpenApiInfo
+//    {
+//        Version = "v1"
+//    });
+//    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//    c.IncludeXmlComments(xmlPath);
+//});
+
+
+builder.Services
+    .AddData(builder.Configuration)
+    .AddCore();
+
+
 
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<UserFriendlyExceptionMiddleware>();
+app.UseMiddleware<ValidationExceptionMiddleware>();
 
 
 // Configure the HTTP request pipeline.
@@ -27,6 +49,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    //app.UseSwaggerUI(c =>
+    //{
+    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    //});
 }
 
 app.UseHttpsRedirection();
