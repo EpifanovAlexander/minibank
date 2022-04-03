@@ -90,12 +90,12 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException("Ошибка: Сумма перевода должна быть больше нуля");
             }
 
-            var formAccount = await _bankAccountRepository.GetById(fromAccountId);
-            if (formAccount==null)
+            var fromAccount = await _bankAccountRepository.GetById(fromAccountId);
+            if (fromAccount==null)
             {
                 throw new ValidationException($"Ошибка: Банковского счёта отправителя нет в БД. Id счёта отправителя: {fromAccountId}");
             }
-            if (!formAccount.IsActive)
+            if (!fromAccount.IsActive)
             {
                 throw new ValidationException($"Ошибка: Банковский счёт отправителя закрыт. Id счёта отправителя: {fromAccountId}");
             }
@@ -110,7 +110,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException($"Ошибка: Банковский счёт получателя закрыт. Id счёта получателя: {toAccountId}");
             }
 
-            return (formAccount.UserId == toAccount.UserId) ? 0 : Math.Round(sum * 0.02, 2);
+            return (fromAccount.UserId == toAccount.UserId) ? 0 : Math.Round(sum * 0.02, 2);
         }
 
 

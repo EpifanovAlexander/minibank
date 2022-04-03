@@ -12,7 +12,7 @@ namespace Minibank.Core.Domains.Currencies
             _currencyRateService = currencyRateService;
         }
 
-        public async Task<double> Convert(double amount, Currency fromCurrency, Currency toCurrency)
+        public async Task<double> Convert(double amount, Currency? fromCurrency, Currency? toCurrency)
         {
             if (amount < 0)
             {
