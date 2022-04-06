@@ -2,6 +2,6 @@
 {
     public interface ICurrencyConverter
     {
-        Task<double> Convert(double amount, Currency? fromCurrency, Currency? toCurrency);
+        Task<double> Convert(double amount, Currency? fromCurrency, Currency? toCurrency, CancellationToken cancellationToken);
     }
 }

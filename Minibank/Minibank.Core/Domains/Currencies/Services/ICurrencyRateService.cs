@@ -2,6 +2,6 @@
 {
     public interface ICurrencyRateService
     {
-        Task<double> GetExchangeRate(Currency? fromCurrency, Currency? toCurrency);
+        Task<double> GetExchangeRate(Currency? fromCurrency, Currency? toCurrency, CancellationToken cancellationToken);
     }
 }

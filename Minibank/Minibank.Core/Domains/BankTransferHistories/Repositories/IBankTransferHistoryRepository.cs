@@ -2,7 +2,7 @@
 {
     public interface IBankTransferHistoryRepository
     {
-        Task Add(CreateBankTransferHistory history);
-        IAsyncEnumerable<BankTransferHistory> GetUserTransferHistory(int userId);
+        Task Add(CreateBankTransferHistory history, CancellationToken cancellationToken);
+        Task<List<BankTransferHistory>> GetUserTransferHistory(int userId, CancellationToken cancellationToken);
     }
 }

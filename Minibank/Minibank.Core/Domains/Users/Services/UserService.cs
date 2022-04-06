@@ -23,50 +23,50 @@ namespace Minibank.Core.Domains.Users.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<User> GetById(int id, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetById(id, cancellationToken);
 
             return user
                 ?? throw new ValidationException($"Такого пользователя нет в БД. Id пользователя: {id}");
         }
 
-        public IAsyncEnumerable<User> GetAll()
+        public Task<List<User>> GetAll(CancellationToken cancellationToken)
         {
-            return _userRepository.GetAll();
+            return _userRepository.GetAll(cancellationToken);
         }
 
-        public async Task Create(CreateUser user)
+        public async Task Create(CreateUser user, CancellationToken cancellationToken)
         {
             _createUserValidator.ValidateAndThrow(user);
 
-            await _userRepository.Create(user);
+            await _userRepository.Create(user, cancellationToken);
             await _unitOfWork.SaveChanges();
         }
 
-        public async Task Update(User user)
+        public async Task Update(User user, CancellationToken cancellationToken)
         {
             _userValidator.ValidateAndThrow(user);
 
-            await _userRepository.Update(user);
+            await _userRepository.Update(user, cancellationToken);
             await _unitOfWork.SaveChanges();
         }
 
-        public async Task DeleteById(int userId)
+        public async Task DeleteById(int userId, CancellationToken cancellationToken)
         {
-            var isUserExist = await _userRepository.Exists(userId);
+            var isUserExist = await _userRepository.Exists(userId, cancellationToken);
             if (!isUserExist)
             {
                 throw new ValidationException($"Такого пользователя нет в БД. Id пользователя: {userId}");
             }
 
-            var isUserHaveAccounts = await _bankAccountRepository.IsUserHaveAccounts(userId);
+            var isUserHaveAccounts = await _bankAccountRepository.IsUserHaveAccounts(userId, cancellationToken);
             if (isUserHaveAccounts)
             {
                 throw new ValidationException($"У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя. Id пользователя: {userId}");
             }
 
-            await _userRepository.DeleteById(userId);
+            await _userRepository.DeleteById(userId, cancellationToken);
             await _unitOfWork.SaveChanges();
         }
     }

@@ -18,43 +18,40 @@ namespace Minibank.Web.Controllers.Users
 
 
         [HttpGet("{id}")]
-        public async Task<UserDto> GetUserById(int id)
+        public async Task<UserDto> GetUserById(int id, CancellationToken cancellationToken)
         {
-            var model = await _userService.GetById(id);
+            var model = await _userService.GetById(id, cancellationToken);
             return new UserDto(model.Id, model.Login, model.Email);
         }
 
 
         [HttpGet]
-        public async IAsyncEnumerable<UserDto> GetAllUsers()
+        public async Task<List<UserDto>> GetAllUsers(CancellationToken cancellationToken)
         {
-            var users = _userService.GetAll();
-
-            await foreach (var user in users)
-            {
-                yield return new UserDto(user.Id, user.Login, user.Email);
-            }
+            return (await _userService.GetAll(cancellationToken))
+                .Select(user => new UserDto(user.Id, user.Login, user.Email))
+                .ToList();
         }
 
 
         [HttpPost]
-        public async Task CreateUser(CreateUserDto model)
+        public async Task CreateUser(CreateUserDto model, CancellationToken cancellationToken)
         {
-            await _userService.Create(new CreateUser(model.Login, model.Email));
+            await _userService.Create(new CreateUser(model.Login, model.Email), cancellationToken);
         }
 
 
         [HttpPut("{id}")]
-        public async Task UpdateUser(int id, CreateUserDto model)
+        public async Task UpdateUser(int id, CreateUserDto model, CancellationToken cancellationToken)
         {
-            await _userService.Update(new User(id, model.Login, model.Email));
+            await _userService.Update(new User(id, model.Login, model.Email), cancellationToken);
         }
  
 
         [HttpDelete("{id}")]
-        public async Task DeleteUserById(int id)
+        public async Task DeleteUserById(int id, CancellationToken cancellationToken)
         {
-            await _userService.DeleteById(id);
+            await _userService.DeleteById(id, cancellationToken);
         }
 
     }

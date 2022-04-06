@@ -16,20 +16,20 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public async Task<bool> Exists(int id)
+        public Task<bool> Exists(int id, CancellationToken cancellationToken)
         {
-            return await _context.BankAccounts.AnyAsync(account => account.Id == id); 
+            return _context.BankAccounts.AnyAsync(account => account.Id == id, cancellationToken); 
         }
 
 
-        public async Task<BankAccount?> GetById(int accountId)
+        public async Task<BankAccount?> GetById(int accountId, CancellationToken cancellationToken)
         {
             var bankAccountDbModel = await _context.BankAccounts
                 .Include(it => it.User)
                 .Include(it => it.FromTransferHistories)
                 .Include(it => it.ToTransferHistories)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(account => account.Id == accountId);
+                .FirstOrDefaultAsync(account => account.Id == accountId, cancellationToken);
 
             if (bankAccountDbModel == null)
             {
@@ -39,24 +39,20 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public async IAsyncEnumerable<BankAccount> GetUserAccounts(int userId)
+        public async Task<List<BankAccount>> GetUserAccounts(int userId, CancellationToken cancellationToken)
         {
-            var accounts = await _context.BankAccounts
+            return await _context.BankAccounts
                  .Where(account => account.UserId == userId && account.IsActive)
                  .Include(it => it.User)
                  .Include(it => it.FromTransferHistories)
                  .Include(it => it.ToTransferHistories)
                  .AsNoTracking()
-                 .ToListAsync();
-
-            foreach (var account in accounts)
-            {
-                yield return BankAccountMapper.ToModel(account);
-            }
+                 .Select(account => BankAccountMapper.ToModel(account))
+                 .ToListAsync(cancellationToken);
         }
 
 
-        public async Task Create(CreateBankAccount account)
+        public async Task Create(CreateBankAccount account, CancellationToken cancellationToken)
         {
             DateTime now = DateTime.Now;
             var bankAccountDbModel = new BankAccountDbModel
@@ -70,14 +66,14 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
                 DateClosing = new DateTime(now.Year + 4, now.Month, now.Day, now.Hour, now.Minute, now.Second)
             };
 
-            await _context.BankAccounts.AddAsync(bankAccountDbModel);
+            await _context.BankAccounts.AddAsync(bankAccountDbModel, cancellationToken);
         }
 
 
-        public async Task Update(BankAccount bankAccount)
+        public async Task Update(BankAccount bankAccount, CancellationToken cancellationToken)
         {
             var bankAccountDbModel = await _context.BankAccounts.AsNoTracking()
-                .FirstOrDefaultAsync(it => it.Id == bankAccount.Id);
+                .FirstOrDefaultAsync(it => it.Id == bankAccount.Id, cancellationToken);
 
             if (bankAccountDbModel == null)
             {
@@ -89,10 +85,10 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public async Task DeleteById(int accountId)
+        public async Task DeleteById(int accountId, CancellationToken cancellationToken)
         {
             var bankAccountDbModel = await _context.BankAccounts
-                .FirstOrDefaultAsync(it => it.Id == accountId);
+                .FirstOrDefaultAsync(it => it.Id == accountId, cancellationToken);
 
             if (bankAccountDbModel == null)
             {
@@ -104,9 +100,9 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         }
 
 
-        public async Task<bool> IsUserHaveAccounts(int userId)
+        public async Task<bool> IsUserHaveAccounts(int userId, CancellationToken cancellationToken)
         {
-            return await _context.BankAccounts.AnyAsync(account => account.UserId == userId && account.IsActive);
+            return await _context.BankAccounts.AnyAsync(account => account.UserId == userId && account.IsActive, cancellationToken);
         }
     }
 }

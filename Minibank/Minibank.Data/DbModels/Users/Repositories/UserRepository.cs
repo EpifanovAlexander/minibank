@@ -15,18 +15,18 @@ namespace Minibank.Data.DbModels.Users.Repositories
         }
 
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> Exists(int id, CancellationToken cancellationToken)
         {
-            return await _context.Users.AnyAsync(user => user.Id == id);
+            return await _context.Users.AnyAsync(user => user.Id == id, cancellationToken);
         }
 
 
-        public async Task<User?> GetById(int id)
+        public async Task<User?> GetById(int id, CancellationToken cancellationToken)
         {
             var userDbModel = await _context.Users
                 .Include(it => it.BankAccounts)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(user => user.Id == id);
+                .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 
             if (userDbModel == null)
             {
@@ -36,18 +36,16 @@ namespace Minibank.Data.DbModels.Users.Repositories
         }
 
 
-        public async IAsyncEnumerable<User> GetAll()
+        public async Task<List<User>> GetAll(CancellationToken cancellationToken)
         {
-            var users = await _context.Users.AsNoTracking().ToListAsync();
-
-            foreach (var user in users)
-            {
-                yield return new User(user.Id, user.Login, user.Email);
-            }
+           return await _context.Users
+                .AsNoTracking()
+                .Select(user => new User(user.Id, user.Login, user.Email))
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task Create(CreateUser user)
+        public async Task Create(CreateUser user, CancellationToken cancellationToken)
         {
             var userDbModel = new UserDbModel
             {
@@ -56,13 +54,13 @@ namespace Minibank.Data.DbModels.Users.Repositories
                 Email = user.Email
             };
 
-            await _context.Users.AddAsync(userDbModel);
+            await _context.Users.AddAsync(userDbModel, cancellationToken);
         }
 
 
-        public async Task Update(User user)
+        public async Task Update(User user, CancellationToken cancellationToken)
         {
-            var userDbModel = await _context.Users.FirstOrDefaultAsync(it => it.Id == user.Id);
+            var userDbModel = await _context.Users.FirstOrDefaultAsync(it => it.Id == user.Id, cancellationToken);
             if (userDbModel == null)
             {
                 throw new ValidationException($"Пользователь не найден. Id пользователя: {user.Id}");
@@ -74,9 +72,9 @@ namespace Minibank.Data.DbModels.Users.Repositories
         }
 
 
-        public async Task DeleteById(int id)
+        public async Task DeleteById(int id, CancellationToken cancellationToken)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
             if (user==null)
             {
                 throw new ValidationException($"Пользователь не найден. Id пользователя: {id}");
