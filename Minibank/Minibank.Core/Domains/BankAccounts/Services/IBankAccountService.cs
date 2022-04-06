@@ -2,11 +2,11 @@
 {
     public interface IBankAccountService
     {
-        Task<BankAccount> GetById(int accountId);
-        IAsyncEnumerable<BankAccount> GetUserBankAccounts(int userId);
-        Task Create(CreateBankAccount account);
-        Task DeleteById(int accountId);
-        Task<double> GetCommission(double sum, int fromAccountId, int toAccountId);
-        Task TransferMoney(double sum, int fromAccountId, int toAccountId);
+        Task<BankAccount> GetById(int accountId, CancellationToken cancellationToken);
+        Task<List<BankAccount>> GetUserBankAccounts(int userId, CancellationToken cancellationToken);
+        Task Create(CreateBankAccount account, CancellationToken cancellationToken);
+        Task DeleteById(int accountId, CancellationToken cancellationToken);
+        Task<double> GetCommission(double sum, int fromAccountId, int toAccountId, CancellationToken cancellationToken);
+        Task TransferMoney(double sum, int fromAccountId, int toAccountId, CancellationToken cancellationToken);
     }
 }

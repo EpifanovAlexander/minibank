@@ -16,7 +16,7 @@ namespace Minibank.Data.DbModels.BankTransferHistories.Repositories
             _context = context;
         }
 
-        public async Task Add(CreateBankTransferHistory history)
+        public async Task Add(CreateBankTransferHistory history, CancellationToken cancellationToken)
         {
             var bankTransferHistoryDbModel = new BankTransferHistoryDbModel
             {
@@ -26,30 +26,25 @@ namespace Minibank.Data.DbModels.BankTransferHistories.Repositories
                 ToAccountId = history.ToAccountId
             };
 
-            await _context.BankTransferHistories.AddAsync(bankTransferHistoryDbModel);
+            await _context.BankTransferHistories.AddAsync(bankTransferHistoryDbModel, cancellationToken);
         }
 
-        public async IAsyncEnumerable<BankTransferHistory> GetUserTransferHistory(int userId)
+        public async Task<List<BankTransferHistory>> GetUserTransferHistory(int userId, CancellationToken cancellationToken)
         {
-            var userAccounts = _bankAccountRepository.GetUserAccounts(userId);
+            var userAccounts = await _bankAccountRepository.GetUserAccounts(userId, cancellationToken);
             var userAccountsId = new List<int>();
 
-            await foreach (var account in userAccounts)
+            foreach (var account in userAccounts)
             {
                 userAccountsId.Add(account.Id);
             }
 
-
-            var histories = _context.BankTransferHistories
+            return await _context.BankTransferHistories
                 .Include(it => it.FromAccount)
                 .Include(it => it.ToAccount)
                 .Where(history => userAccountsId.Contains(history.FromAccountId))
-                .Select(history => new BankTransferHistory(history.Id, history.Sum, history.FromAccountId, history.ToAccountId));
-
-            foreach (var historiy in histories)
-            {
-                yield return historiy;
-            }
+                .Select(history => new BankTransferHistory(history.Id, history.Sum, history.FromAccountId, history.ToAccountId))
+                .ToListAsync(cancellationToken);
         }
 
     }

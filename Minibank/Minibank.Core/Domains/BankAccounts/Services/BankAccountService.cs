@@ -17,8 +17,8 @@ namespace Minibank.Core.Domains.BankAccounts.Services
         private readonly IValidator<CreateBankAccount> _createBankAccountValidator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BankAccountService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository, 
-            ICurrencyConverter currencyConverter, IBankTransferHistoryRepository bankTransferHistoryRepository, 
+        public BankAccountService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository,
+            ICurrencyConverter currencyConverter, IBankTransferHistoryRepository bankTransferHistoryRepository,
             IValidator<CreateBankAccount> createBankAccountValidator, IUnitOfWork unitOfWork)
         {
             _bankAccountRepository = bankAccountRepository;
@@ -30,44 +30,39 @@ namespace Minibank.Core.Domains.BankAccounts.Services
         }
 
 
-        public async Task<BankAccount> GetById(int accountId)
+        public async Task<BankAccount> GetById(int accountId, CancellationToken cancellationToken)
         {
-            var bankAccount = await _bankAccountRepository.GetById(accountId);
+            var bankAccount = await _bankAccountRepository.GetById(accountId, cancellationToken);
 
             return bankAccount
                 ?? throw new ValidationException($"Ошибка: Такого банковского счёта нет в БД. Id счёта: {accountId}");
         }
 
 
-        public async IAsyncEnumerable<BankAccount> GetUserBankAccounts(int userId)
+        public async Task<List<BankAccount>> GetUserBankAccounts(int userId, CancellationToken cancellationToken)
         {
-            bool isUserExist = await _userRepository.Exists(userId);
+            bool isUserExist = await _userRepository.Exists(userId, cancellationToken);
             if (!isUserExist)
             {
                 throw new ValidationException($"Ошибка: Такого пользователя нет в БД. Id пользователя: {userId}");
             }
 
-            var accounts = _bankAccountRepository.GetUserAccounts(userId);
-
-            await foreach (var account in accounts)
-            {
-                yield return account;
-            }
+            return await _bankAccountRepository.GetUserAccounts(userId, cancellationToken);
         }
 
 
-        public async Task Create(CreateBankAccount account)
+        public async Task Create(CreateBankAccount account, CancellationToken cancellationToken)
         {
             _createBankAccountValidator.ValidateAndThrow(account);
 
-            await _bankAccountRepository.Create(account);
+            await _bankAccountRepository.Create(account, cancellationToken);
             await _unitOfWork.SaveChanges();
         }
 
 
-        public async Task DeleteById(int accountId)
+        public async Task DeleteById(int accountId, CancellationToken cancellationToken)
         {
-            BankAccount? account = await _bankAccountRepository.GetById(accountId);
+            BankAccount? account = await _bankAccountRepository.GetById(accountId, cancellationToken);
             if (account == null)
             {
                 throw new ValidationException($"Ошибка: Такого банковского счёта нет в БД. Id счёта: {accountId}");
@@ -78,20 +73,20 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException("Ошибка: На данном банковском счёте ещё остались средства. Такой счёт закрыть нельзя");
             }
 
-            await _bankAccountRepository.DeleteById(accountId);
+            await _bankAccountRepository.DeleteById(accountId, cancellationToken);
             await _unitOfWork.SaveChanges();
         }
 
 
-        public async Task<double> GetCommission(double sum, int fromAccountId, int toAccountId)
+        public async Task<double> GetCommission(double sum, int fromAccountId, int toAccountId, CancellationToken cancellationToken)
         {
-            if (sum<=0)
+            if (sum <= 0)
             {
                 throw new ValidationException("Ошибка: Сумма перевода должна быть больше нуля");
             }
 
-            var formAccount = await _bankAccountRepository.GetById(fromAccountId);
-            if (formAccount==null)
+            var formAccount = await _bankAccountRepository.GetById(fromAccountId, cancellationToken);
+            if (formAccount == null)
             {
                 throw new ValidationException($"Ошибка: Банковского счёта отправителя нет в БД. Id счёта отправителя: {fromAccountId}");
             }
@@ -100,7 +95,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException($"Ошибка: Банковский счёт отправителя закрыт. Id счёта отправителя: {fromAccountId}");
             }
 
-            var toAccount = await _bankAccountRepository.GetById(toAccountId);
+            var toAccount = await _bankAccountRepository.GetById(toAccountId, cancellationToken);
             if (toAccount == null)
             {
                 throw new ValidationException($"Ошибка: Банковского счёта получателя нет в БД. Id счёта получателя: {toAccountId}");
@@ -120,9 +115,9 @@ namespace Minibank.Core.Domains.BankAccounts.Services
         }
 
 
-        public async Task TransferMoney(double sum, int fromAccountId, int toAccountId)
+        public async Task TransferMoney(double sum, int fromAccountId, int toAccountId, CancellationToken cancellationToken)
         {
-            if (sum<=0)
+            if (sum <= 0)
             {
                 throw new ValidationException("Ошибка: Сумма перевода должна быть больше нуля");
             }
@@ -132,7 +127,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
                 throw new ValidationException("Ошибка: указан один и тот же банковский счёт");
             }
 
-            var fromAccount = await _bankAccountRepository.GetById(fromAccountId);
+            var fromAccount = await _bankAccountRepository.GetById(fromAccountId, cancellationToken);
             if (fromAccount == null)
             {
                 throw new ValidationException($"Ошибка: Банковского счёта отправителя нет в БД. Id счёта отправителя: {fromAccountId}");
@@ -144,8 +139,8 @@ namespace Minibank.Core.Domains.BankAccounts.Services
             }
 
 
-            var toAccount = await _bankAccountRepository.GetById(toAccountId);
-            if (toAccount==null)
+            var toAccount = await _bankAccountRepository.GetById(toAccountId, cancellationToken);
+            if (toAccount == null)
             {
                 throw new ValidationException($"Ошибка: Банковского счёта получателяя нет в БД. Id счёта получателя: {toAccountId}");
             }
@@ -162,15 +157,15 @@ namespace Minibank.Core.Domains.BankAccounts.Services
             }
 
             double sumWithComission = sum - GetCommission(sum, fromAccount, toAccount);
-            double sumTo = await _currencyConverter.Convert(sumWithComission, fromAccount.Currency, toAccount.Currency);
+            double sumTo = await _currencyConverter.Convert(sumWithComission, fromAccount.Currency, toAccount.Currency, cancellationToken);
 
             fromAccount.Sum = Math.Round(fromAccount.Sum - sum, 2);
             toAccount.Sum = Math.Round(toAccount.Sum + sumTo, 2);
 
-            await _bankAccountRepository.Update(fromAccount);
-            await _bankAccountRepository.Update(toAccount);
+            await _bankAccountRepository.Update(fromAccount, cancellationToken);
+            await _bankAccountRepository.Update(toAccount, cancellationToken);
 
-            await _bankTransferHistoryRepository.Add(new CreateBankTransferHistory(sum, fromAccountId, toAccountId));
+            await _bankTransferHistoryRepository.Add(new CreateBankTransferHistory(sum, fromAccountId, toAccountId), cancellationToken);
             await _unitOfWork.SaveChanges();
         }
 

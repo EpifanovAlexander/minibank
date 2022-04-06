@@ -15,9 +15,10 @@ namespace Minibank.Data.HttpClients
             _httpClient = httpClient;
         }
 
-        public async Task<double> GetExchangeRate(Currency fromCurrency, Currency toCurrency)
+
+        public async Task<double> GetExchangeRate(Currency? fromCurrency, Currency? toCurrency, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetFromJsonAsync<CourseResponse>("daily_json.js");
+            var response = await _httpClient.GetFromJsonAsync<CourseResponse>("daily_json.js", cancellationToken);
             if (response == null)
             {
                 throw new ValidationException("Ошибка: файл с данными о курсах валют не найден");
