@@ -25,9 +25,6 @@ namespace Minibank.Data.DbModels.BankAccounts.Repositories
         public async Task<BankAccount?> GetById(int accountId, CancellationToken cancellationToken)
         {
             var bankAccountDbModel = await _context.BankAccounts
-                .Include(it => it.User)
-                .Include(it => it.FromTransferHistories)
-                .Include(it => it.ToTransferHistories)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(account => account.Id == accountId, cancellationToken);
 
