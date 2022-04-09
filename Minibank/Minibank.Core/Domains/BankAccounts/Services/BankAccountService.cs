@@ -53,7 +53,7 @@ namespace Minibank.Core.Domains.BankAccounts.Services
 
         public async Task Create(CreateBankAccount account, CancellationToken cancellationToken)
         {
-            _createBankAccountValidator.ValidateAndThrowAsync(account);
+            await _createBankAccountValidator.ValidateAndThrowAsync(account);
 
             await _bankAccountRepository.Create(account, cancellationToken);
             await _unitOfWork.SaveChanges();
