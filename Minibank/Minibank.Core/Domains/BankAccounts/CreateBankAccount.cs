@@ -6,9 +6,9 @@ namespace Minibank.Core.Domains.BankAccounts
     {
         public int UserId { get; set; }
         public double Sum { get; set; }
-        public Currency Currency { get; set; }
+        public Currency? Currency { get; set; }
 
-        public CreateBankAccount(int userId, Currency currency, double sum = 0)
+        public CreateBankAccount(int userId, Currency? currency, double sum = 0)
         {
             UserId = userId;
             Sum = sum;
