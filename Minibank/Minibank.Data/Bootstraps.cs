@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Minibank.Core;
 using Minibank.Core.Domains.BankAccounts.Repositories;
 using Minibank.Core.Domains.BankTransferHistories.Repositories;
 using Minibank.Core.Domains.Currencies.Services;
@@ -24,6 +26,12 @@ namespace Minibank.Data
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<IBankTransferHistoryRepository, BankTransferHistoryRepository>();
+
+            services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+            services.AddEntityFrameworkNpgsql().AddDbContext<MinibankContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             return services;
         }

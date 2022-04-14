@@ -4,6 +4,8 @@ using Minibank.Core.Domains.Currencies;
 using Minibank.Core.Domains.Users.Services;
 using Minibank.Core.Domains.BankAccounts.Services;
 using Minibank.Core.Domains.BankTransferHistories.Services;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 namespace Minibank.Core
 {
@@ -15,6 +17,13 @@ namespace Minibank.Core
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBankAccountService, BankAccountService>();
             services.AddScoped<IBankTransferHistoryService, BankTransferHistoryService>();
+
+            services.AddFluentValidation()
+                .AddValidatorsFromAssembly(typeof(UserService).Assembly);
+
+            services.AddFluentValidation()
+                .AddValidatorsFromAssembly(typeof(BankAccountService).Assembly);
+
             return services;
         }
     }

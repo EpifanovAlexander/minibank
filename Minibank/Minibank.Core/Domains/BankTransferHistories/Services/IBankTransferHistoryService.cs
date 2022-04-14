@@ -2,6 +2,6 @@
 {
     public interface IBankTransferHistoryService
     {
-        IEnumerable<BankTransferHistory> GetUserTransferHistory(int userId);
+        Task<List<BankTransferHistory>> GetUserTransferHistory(int userId, CancellationToken cancellationToken);
     }
 }

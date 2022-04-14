@@ -18,39 +18,40 @@ namespace Minibank.Web.Controllers.BankAccounts
 
 
         [HttpGet("/{accountId}")]
-        public BankAccountDto GetBankAccountById(int accountId)
+        public async Task<BankAccountDto> GetBankAccountById(int accountId, CancellationToken cancellationToken)
         {
-            var model = _bankAccountService.GetById(accountId);
+            var model = await _bankAccountService.GetById(accountId, cancellationToken);
             return new BankAccountDto(model.Id, model.UserId, model.Currency, model.Sum);
         }
 
 
         [HttpGet("user/{userId}")]
-        public IEnumerable<BankAccountDto> GetUserBankAccounts(int userId)
+        public async Task<List<BankAccountDto>> GetUserBankAccounts(int userId, CancellationToken cancellationToken)
         {
-            return _bankAccountService.GetUserBankAccounts(userId)
-                .Select(model => new BankAccountDto(model.Id, model.UserId, model.Currency, model.Sum));
+            return (await _bankAccountService.GetUserBankAccounts(userId, cancellationToken))
+                .Select(account => new BankAccountDto(account.Id, account.UserId, account.Currency, account.Sum))
+                .ToList();
         }
 
 
         [HttpPost]
-        public void CreateBankAccount(CreateBankAccountDto model)
+        public async Task CreateBankAccount(CreateBankAccountDto model, CancellationToken cancellationToken)
         {
-            _bankAccountService.Create(new CreateBankAccount(model.UserId, model.Currency, model.Sum));
+            await _bankAccountService.Create(new CreateBankAccount(model.UserId, model.Currency, model.Sum), cancellationToken);
         }
 
 
         [HttpPost("transfer")]
-        public void TransferMoney(double sum, int fromAccountId, int toAccountId)
+        public async Task TransferMoney(double sum, int fromAccountId, int toAccountId, CancellationToken cancellationToken)
         {
-            _bankAccountService.TransferMoney(sum, fromAccountId, toAccountId);
+            await _bankAccountService.TransferMoney(sum, fromAccountId, toAccountId, cancellationToken);
         }
 
 
         [HttpDelete("/{accountId}")]
-        public void DeleteBankAccountById(int accountId)
+        public async Task DeleteBankAccountById(int accountId, CancellationToken cancellationToken)
         {
-            _bankAccountService.DeleteById(accountId);
+            await _bankAccountService.DeleteById(accountId, cancellationToken);
         }
 
     }

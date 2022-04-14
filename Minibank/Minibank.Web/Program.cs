@@ -1,5 +1,6 @@
 using Minibank.Core;
 using Minibank.Data;
+using Minibank.Web.HostedServices;
 using Minibank.Web.Middlewares;
 
 
@@ -30,6 +31,7 @@ builder.Services.AddSwaggerGen();
 //    c.IncludeXmlComments(xmlPath);
 //});
 
+builder.Services.AddHostedService<MigrationHostedService>();
 
 builder.Services
     .AddData(builder.Configuration)

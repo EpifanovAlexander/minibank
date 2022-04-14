@@ -2,11 +2,11 @@
 {
     public interface IUserRepository
     {
-        User? GetById(int userId);
-        IEnumerable<User> GetAll();
-        void Create(CreateUser user);
-        void Update(User user);
-        void DeleteById(int userId);
-        bool Exists(int id);
+        Task<User?> GetById(int userId, CancellationToken cancellationToken);
+        Task<List<User>> GetAll(CancellationToken cancellationToken);
+        Task Create(CreateUser user, CancellationToken cancellationToken);
+        Task Update(User user, CancellationToken cancellationToken);
+        Task DeleteById(int userId, CancellationToken cancellationToken);
+        Task<bool> Exists(int id, CancellationToken cancellationToken);
     }
 }

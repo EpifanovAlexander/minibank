@@ -2,12 +2,12 @@
 {
     public interface IBankAccountRepository
     {
-        BankAccount? GetById(int accountId);
-        IEnumerable<BankAccount> GetUserAccounts(int userId);
-        void Create(CreateBankAccount account);
-        void Update(BankAccount account);
-        void DeleteById(int accountId);
-        bool Exists(int id);
-        bool IsUserHaveAccounts(int userId);
+        Task<BankAccount?> GetById(int accountId, CancellationToken cancellationToken);
+        Task<List<BankAccount>> GetUserAccounts(int userId, CancellationToken cancellationToken);
+        Task Create(CreateBankAccount account, CancellationToken cancellationToken);
+        Task Update(BankAccount account, CancellationToken cancellationToken);
+        Task DeleteById(int accountId, CancellationToken cancellationToken);
+        Task<bool> Exists(int id, CancellationToken cancellationToken);
+        Task<bool> IsUserHaveAccounts(int userId, CancellationToken cancellationToken);
     }
 }

@@ -1,6 +1,7 @@
-﻿using Minibank.Core.Domains.BankAccounts.Repositories;
+﻿using FluentValidation;
+using Minibank.Core.Domains.BankAccounts.Repositories;
 using Minibank.Core.Domains.Users.Repositories;
-using Minibank.Core.Exceptions;
+using ValidationException = Minibank.Core.Exceptions.ValidationException;
 
 namespace Minibank.Core.Domains.Users.Services
 {
@@ -8,52 +9,65 @@ namespace Minibank.Core.Domains.Users.Services
     {
         private readonly IBankAccountRepository _bankAccountRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IValidator<User> _userValidator;
+        private readonly IValidator<CreateUser> _createUserValidator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository)
+        public UserService(IBankAccountRepository bankAccountRepository, IUserRepository userRepository,
+            IValidator<User> userValidator, IValidator<CreateUser> createUserValidator, IUnitOfWork unitOfWork)
         {
             _bankAccountRepository = bankAccountRepository;
             _userRepository = userRepository;
+            _userValidator = userValidator;
+            _createUserValidator = createUserValidator;
+            _unitOfWork = unitOfWork;
         }
 
-        public User GetById(int id)
+        public async Task<User> GetById(int id, CancellationToken cancellationToken)
         {
-            return _userRepository.GetById(id)
+            var user = await _userRepository.GetById(id, cancellationToken);
+
+            return user
                 ?? throw new ValidationException($"Такого пользователя нет в БД. Id пользователя: {id}");
         }
 
-        public IEnumerable<User> GetAll()
+        public Task<List<User>> GetAll(CancellationToken cancellationToken)
         {
-            return _userRepository.GetAll();
+            return _userRepository.GetAll(cancellationToken);
         }
 
-        public void Create(CreateUser user)
+        public async Task Create(CreateUser user, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(user.Login) || user.Login.Length > 20)
-            {
-                throw new ValidationException("Не задан логин или длина более 20 символов");
-            }
+            _createUserValidator.ValidateAndThrow(user);
 
-            _userRepository.Create(user);
+            await _userRepository.Create(user, cancellationToken);
+            await _unitOfWork.SaveChanges();
         }
 
-        public void Update(User user)
+        public async Task Update(User user, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(user.Login) || user.Login.Length > 20)
-            {
-                throw new ValidationException("Не задан логин или длина более 20 символов");
-            }
+            _userValidator.ValidateAndThrow(user);
 
-            _userRepository.Update(user);
+            await _userRepository.Update(user, cancellationToken);
+            await _unitOfWork.SaveChanges();
         }
 
-        public void DeleteById(int userId)
+        public async Task DeleteById(int userId, CancellationToken cancellationToken)
         {
-            if (_bankAccountRepository.IsUserHaveAccounts(userId))
+            var isUserExist = await _userRepository.Exists(userId, cancellationToken);
+            if (!isUserExist)
             {
-                throw new ValidationException("У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя");
+                throw new ValidationException($"Такого пользователя нет в БД. Id пользователя: {userId}");
             }
 
-            _userRepository.DeleteById(userId);
+            var isUserHaveAccounts = await _bankAccountRepository.IsUserHaveAccounts(userId, cancellationToken);
+            if (isUserHaveAccounts)
+            {
+                throw new ValidationException($"У пользователя ещё остались незакрытые счета. Такого пользователя удалить нельзя. Id пользователя: {userId}");
+            }
+
+            await _userRepository.DeleteById(userId, cancellationToken);
+            await _unitOfWork.SaveChanges();
         }
     }
 }

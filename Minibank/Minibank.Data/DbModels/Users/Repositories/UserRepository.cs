@@ -1,4 +1,5 @@
-﻿using Minibank.Core.Domains.Users;
+﻿using Microsoft.EntityFrameworkCore;
+using Minibank.Core.Domains.Users;
 using Minibank.Core.Domains.Users.Repositories;
 using Minibank.Core.Exceptions;
 
@@ -6,16 +7,27 @@ namespace Minibank.Data.DbModels.Users.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private static readonly List<UserDbModel> _userStorage = new();
+        private readonly MinibankContext _context;
 
-        public bool Exists(int id)
+        public UserRepository(MinibankContext context)
         {
-            return _userStorage.Exists(user => user.Id == id);
+            _context = context;
         }
 
-        public User? GetById(int id)
+
+        public async Task<bool> Exists(int id, CancellationToken cancellationToken)
         {
-            var userDbModel = _userStorage.FirstOrDefault(user => user.Id == id);
+            return await _context.Users.AnyAsync(user => user.Id == id, cancellationToken);
+        }
+
+
+        public async Task<User?> GetById(int id, CancellationToken cancellationToken)
+        {
+            var userDbModel = await _context.Users
+                .Include(it => it.BankAccounts)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+
             if (userDbModel == null)
             {
                 return null;
@@ -23,25 +35,32 @@ namespace Minibank.Data.DbModels.Users.Repositories
             return new User(userDbModel.Id, userDbModel.Login, userDbModel.Email);
         }
 
-        public IEnumerable<User> GetAll()
+
+        public async Task<List<User>> GetAll(CancellationToken cancellationToken)
         {
-            return _userStorage.Select(user => new User(user.Id, user.Login, user.Email));
+           return await _context.Users
+                .AsNoTracking()
+                .Select(user => new User(user.Id, user.Login, user.Email))
+                .ToListAsync(cancellationToken);
         }
 
-        public void Create(CreateUser user)
+
+        public async Task Create(CreateUser user, CancellationToken cancellationToken)
         {
             var userDbModel = new UserDbModel
             {
-                Id = (_userStorage.Count==0) ? 0 : _userStorage.Max(u => u.Id)+1,
+                Id = 0,
                 Login = user.Login,
                 Email = user.Email
             };
-            _userStorage.Add(userDbModel);
+
+            await _context.Users.AddAsync(userDbModel, cancellationToken);
         }
 
-        public void Update(User user)
+
+        public async Task Update(User user, CancellationToken cancellationToken)
         {
-            var userDbModel = _userStorage.FirstOrDefault(userInStorage => userInStorage.Id == user.Id);
+            var userDbModel = await _context.Users.FirstOrDefaultAsync(it => it.Id == user.Id, cancellationToken);
             if (userDbModel == null)
             {
                 throw new ValidationException($"Пользователь не найден. Id пользователя: {user.Id}");
@@ -49,16 +68,19 @@ namespace Minibank.Data.DbModels.Users.Repositories
 
             userDbModel.Login = user.Login;
             userDbModel.Email = user.Email;
+            _context.Entry(userDbModel).State = EntityState.Modified;
         }
 
-        public void DeleteById(int id)
+
+        public async Task DeleteById(int id, CancellationToken cancellationToken)
         {
-            if (!Exists(id))
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+            if (user==null)
             {
                 throw new ValidationException($"Пользователь не найден. Id пользователя: {id}");
             }
-            
-            _userStorage.Remove(_userStorage.First(user => user.Id == id));
+
+            _context.Users.Remove(user);
         }
     }
 }
