@@ -12,6 +12,8 @@ namespace Minibank.Core.Domains.BankAccounts
         public DateTime DateOpening { get; set; }
         public DateTime? DateClosing { get; set; }
 
+        public BankAccount() { }
+
         public BankAccount(int id, int userId, Currency? currency, bool isActive, DateTime dateOpening, DateTime? dateClosing, double sum = 0)
         {
             Id = id;

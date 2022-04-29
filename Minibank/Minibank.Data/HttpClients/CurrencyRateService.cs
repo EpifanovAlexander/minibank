@@ -15,7 +15,6 @@ namespace Minibank.Data.HttpClients
             _httpClient = httpClient;
         }
 
-
         public async Task<double> GetExchangeRate(Currency? fromCurrency, Currency? toCurrency, CancellationToken cancellationToken)
         {
             var response = await _httpClient.GetFromJsonAsync<CourseResponse>("daily_json.js", cancellationToken);

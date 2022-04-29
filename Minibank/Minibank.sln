@@ -3,18 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32210.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minibank.Web", "Minibank.Web\Minibank.Web.csproj", "{3E061C51-B521-46DB-9FBF-EAFC07DD50A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minibank.Web", "Minibank.Web\Minibank.Web.csproj", "{3E061C51-B521-46DB-9FBF-EAFC07DD50A4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C130A4EF-3F77-49D8-8869-E77A5CBBE930} = {C130A4EF-3F77-49D8-8869-E77A5CBBE930}
 		{804019FA-3F9B-4A02-B6E6-82224ADA51E7} = {804019FA-3F9B-4A02-B6E6-82224ADA51E7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minibank.Core", "Minibank.Core\Minibank.Core.csproj", "{804019FA-3F9B-4A02-B6E6-82224ADA51E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minibank.Core", "Minibank.Core\Minibank.Core.csproj", "{804019FA-3F9B-4A02-B6E6-82224ADA51E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minibank.Data", "Minibank.Data\Minibank.Data.csproj", "{C130A4EF-3F77-49D8-8869-E77A5CBBE930}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minibank.Data", "Minibank.Data\Minibank.Data.csproj", "{C130A4EF-3F77-49D8-8869-E77A5CBBE930}"
 	ProjectSection(ProjectDependencies) = postProject
 		{804019FA-3F9B-4A02-B6E6-82224ADA51E7} = {804019FA-3F9B-4A02-B6E6-82224ADA51E7}
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7CFB1A49-CA49-4BD9-8B9D-7E5E5A2E51E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minibank.Core.Tests", "Minibank.Core.Tests\Minibank.Core.Tests.csproj", "{BE62B30B-7979-414A-9896-7D2136C6D6FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,9 +38,16 @@ Global
 		{C130A4EF-3F77-49D8-8869-E77A5CBBE930}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C130A4EF-3F77-49D8-8869-E77A5CBBE930}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C130A4EF-3F77-49D8-8869-E77A5CBBE930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE62B30B-7979-414A-9896-7D2136C6D6FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE62B30B-7979-414A-9896-7D2136C6D6FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE62B30B-7979-414A-9896-7D2136C6D6FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE62B30B-7979-414A-9896-7D2136C6D6FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BE62B30B-7979-414A-9896-7D2136C6D6FB} = {7CFB1A49-CA49-4BD9-8B9D-7E5E5A2E51E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A3BA217-8521-4BBE-98C2-A1063A6EB132}
