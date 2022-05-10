@@ -2,10 +2,12 @@
 using Minibank.Core.Domains.BankAccounts.Services;
 using Minibank.Core.Domains.BankAccounts;
 using Minibank.Web.Controllers.BankAccounts.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Minibank.Web.Controllers.BankAccounts
 {
     [ApiController]
+   // [Authorize]
     [Route("[controller]")]
     public class BankAccountsController : ControllerBase
     {

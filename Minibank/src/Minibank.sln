@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minibank.Data", "Minibank.D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7CFB1A49-CA49-4BD9-8B9D-7E5E5A2E51E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minibank.Core.Tests", "Minibank.Core.Tests\Minibank.Core.Tests.csproj", "{BE62B30B-7979-414A-9896-7D2136C6D6FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minibank.Core.Tests", "Minibank.Core.Tests\Minibank.Core.Tests.csproj", "{BE62B30B-7979-414A-9896-7D2136C6D6FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

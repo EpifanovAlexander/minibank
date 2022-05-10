@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Minibank.Core.Domains.Users;
 using Minibank.Core.Domains.Users.Services;
 using Minibank.Web.Controllers.Users.Dto;
@@ -6,6 +7,7 @@ using Minibank.Web.Controllers.Users.Dto;
 namespace Minibank.Web.Controllers.Users
 {
     [ApiController]
+   // [Authorize]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {

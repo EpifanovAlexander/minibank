@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Minibank.Core.Domains.BankTransferHistories.Services;
 using Minibank.Web.Controllers.TransferHistories.Dto;
 
 namespace Minibank.Web.Controllers.TransferHistories
 {
     [ApiController]
+   // [Authorize]
     [Route("[controller]")]
     public class BankTransferHistoryController : ControllerBase
     {

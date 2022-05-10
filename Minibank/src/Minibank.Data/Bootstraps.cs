@@ -29,7 +29,7 @@ namespace Minibank.Data
 
             services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<MinibankContext>(options => options
+            services.AddDbContext<MinibankContext>(options => options
                 .UseLazyLoadingProxies()
                 .UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
